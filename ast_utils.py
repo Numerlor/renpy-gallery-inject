@@ -17,6 +17,11 @@ NodeWrapper = namedtuple("NodeWrapper", ["node", "parent", "pos_in_parent"])
 
 def walk_sl_ast(wrapped_top_node):
     # type: (NodeWrapper) -> Iterator[NodeWrapper]
+    """
+    Yield all the child block nodes from the node in `wrapped_top_node`.
+    
+    In case an SLIf or SLShowIf node is found, its blocks are yielded instead of the node itself.
+    """
     todo = deque([wrapped_top_node])
 
     while todo:
@@ -71,17 +76,21 @@ def _find_node(type_, predicate, start_nodes, return_previous):
 
 def find_label(label_name):
     # type: (unicode) -> renpy.ast.Label
-    """Return the label with the name `label_name`."""
+    """Return the label with the `label_name` name."""
     return renpy.game.script.lookup(label_name)
 
 
 def find_say(query, start_nodes, return_previous=False):
     # type: (dict, list[renpy.ast.Node], bool) -> renpy.ast.Node
     """
-    Find the say node with the information from `query`, or the previous node if return_previous is specified.
+    Find the next say node matching `query` after any of `start_nodes`, the first matching node is returned.
 
     `query` should be a dict with the following structure {"who": sayer_name, "what": message},
     where either of the pairs is optional.
+    
+    When the `ANY_LABEL` sentinel is passed to `start_nodes`, all labels are searched for the node.
+
+    If return_previous is specified, return the node before the found node.
     """
 
     def predicate(node):
@@ -97,8 +106,16 @@ def find_say(query, start_nodes, return_previous=False):
 
 def find_code(var_names, start_nodes, return_previous=False):
     # type: (set, list[renpy.ast.Node], bool) -> renpy.ast.Node
-    """Find the code node that has any variables or constants from var_names and return it,
-    or the previous node if return_previous is specified."""
+    """
+    Find the code node with `var_names` after any of `start_nodes`, the first matching node is returned.
+
+    `var_names` may contain names of variables and attributes any code constants,
+    if any of them is in the code, the node is seen as equal to the search.
+    
+    When the `ANY_LABEL` sentinel is passed to `start_nodes`, all labels are searched for the node.
+
+    If return_previous is specified, return the node before the found node.
+    """
 
     def predicate(node):
         code = node.code.bytecode
@@ -109,7 +126,13 @@ def find_code(var_names, start_nodes, return_previous=False):
 
 def find_jump(label_name, start_nodes, return_previous=False):
     # type: (unicode, list[renpy.ast.Node], bool) -> renpy.ast.Node
-    """Find the jump node that jumps to label_name and return it, or the previous node if return_previous is specified."""
+    """
+    Find the next jump node that jumps to `label_name` after any of `start_nodes`, the first matching node is returned.
+
+    When the `ANY_LABEL` sentinel is passed to `start_nodes`, all labels are searched for the node.
+
+    If return_previous is specified, return the node before the found node.
+    """
 
     def predicate(node):
         return node.target == label_name
@@ -119,8 +142,16 @@ def find_jump(label_name, start_nodes, return_previous=False):
 
 def find_scene(query, start_nodes, return_previous=False):
     # type: (dict, list[renpy.ast.Node], bool) -> renpy.ast.Node
-    """Find the next scene mode, `query` should be a dict with the following structure:
-     {"layer": layer_name, "name": name}, where either of the pairs is optional. """
+    """
+    Find the next scene node after any of `start_nodes`, the first matching node is returned.
+
+    `query` should be a dict with the following structure: {"layer": layer_name, "name": name},
+    where either of the pairs is optional.
+
+    When the `ANY_LABEL` sentinel is passed to `start_nodes`, all labels are searched for the node.
+
+    If return_previous is specified, return the node before the found node.
+    """
 
     def predicate(node):
         return (
@@ -133,7 +164,13 @@ def find_scene(query, start_nodes, return_previous=False):
 
 def find_show(name, start_nodes, return_previous=False):
     # type: (unicode, list[renpy.ast.Node], bool) -> renpy.ast.Node
-    """Find the next show statement showing `name`."""
+    """
+    Find the next show statement showing `name` after any of `start_nodes`, the first matching node is returned.
+
+    When the `ANY_LABEL` sentinel is passed to `start_nodes`, all labels are searched for the node.
+
+    If return_previous is specified, return the node before the found node.
+    """
 
     def predicate(node):
         return node.imspec is not None and u" ".join(node.imspec[0]) == name
@@ -143,7 +180,15 @@ def find_show(name, start_nodes, return_previous=False):
 
 def find_user_statement(name, params, start_nodes, return_previous=False):
     # type: (unicode, dict, list[renpy.ast.Node], bool) -> renpy.ast.Node
-    """Find the next user statement executing `name`, with an intersection of `params`."""
+    """
+    Find the next user statement executing `name` after any of `start_nodes`, the first matching node is returned.
+
+    All keys from `params` must be present in the statement's params with equal values.
+
+    When the `ANY_LABEL` sentinel is passed to `start_nodes`, all labels are searched for the node.
+
+    If return_previous is specified, return the node before the found node.
+    """
 
     def predicate(node):
         statement_name = u" ".join(node.parsed[0])
@@ -157,7 +202,11 @@ def find_user_statement(name, params, start_nodes, return_previous=False):
 
 def find_return(start_nodes):
     # type: (list[renpy.ast.Node]) -> renpy.ast.Node
-    """Return the node before the return."""
+    """
+    Return the node before the return node found after any of `start_nodes`, the first matching node is returned.
+
+    When the `ANY_LABEL` sentinel is passed to `start_nodes`, all labels are searched for the node.
+    """
 
     def predicate(node):
         return True
@@ -167,7 +216,13 @@ def find_return(start_nodes):
 
 def find_menu(start_nodes, return_previous=False):
     # type: (list[renpy.ast.Node], bool) -> renpy.ast.Node
-    """Find the next menu node."""
+    """
+    Find the next menu node after any of `start_nodes`, the first matching node is returned.
+
+    When the `ANY_LABEL` sentinel is passed to `start_nodes`, all labels are searched for the node.
+
+    If return_previous is specified, return the node before the found node.
+    """
 
     def predicate(node):
         return True
