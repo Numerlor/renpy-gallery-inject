@@ -61,5 +61,5 @@ transform grid_scale:
     xysize (0.9, 0.9)
 
 init 999 python:
-    import gallery
-    gallery.add_button()
+    import gallery as __gallery
+    __gallery.add_button()
