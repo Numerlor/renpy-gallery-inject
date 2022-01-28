@@ -51,7 +51,7 @@ screen name_change_screen():
                     frame:
                         grid 1 len(character_group):
                             yspacing __Y_SPACING
-                            for i, character in enumerate(character_group):
+                            for character in character_group:
                                 hbox xfill True:
                                     text character size __TEXT_SIZE
                                     fixed:
