@@ -8,6 +8,10 @@ from collections import Callable, deque, Iterator, namedtuple
 import renpy.ast
 from renpy.sl2 import slast
 
+ANY_LABEL = object()
+_MISSING = object()
+
+
 NodeWrapper = namedtuple("NodeWrapper", ["node", "parent", "pos_in_parent"])
 
 
@@ -35,9 +39,6 @@ def walk_sl_ast(wrapped_top_node):
                 for pos, child in enumerate(wrapped_node.node.children)
             )
             yield wrapped_node
-
-
-ANY_LABEL = object()
 
 
 def _find_node(type_, predicate, start_nodes, return_previous):
@@ -138,9 +139,6 @@ def find_show(name, start_nodes, return_previous=False):
         return node.imspec is not None and u" ".join(node.imspec[0]) == name
 
     return _find_node(renpy.ast.Show, predicate, start_nodes, return_previous)
-
-
-_MISSING = object()
 
 
 def find_user_statement(name, params, start_nodes, return_previous=False):
