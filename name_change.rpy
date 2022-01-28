@@ -47,25 +47,25 @@ screen name_change_screen():
             xspacing __X_SPACING
             mousewheel True
 
-            for __character_group in __grouped_characters:
+            for character_group in __grouped_characters:
                     frame:
-                        grid 1 len(__character_group):
+                        grid 1 len(character_group):
                             yspacing __Y_SPACING
-                            for __i, __character in enumerate(__character_group):
+                            for i, character in enumerate(character_group):
                                 hbox xfill True:
-                                    text __character size __TEXT_SIZE
+                                    text character size __TEXT_SIZE
                                     fixed:
                                         ysize 1  # do not let the input flow out of the box
-                                        if __character == active_field_name:
+                                        if character == active_field_name:
                                             input:
                                                 xalign 1.0
-                                                value DictInputValue(persistent.mod_gallery_names_, __character)
+                                                value DictInputValue(persistent.mod_gallery_names_, character)
                                                 size __TEXT_SIZE
                                         else:
-                                            textbutton persistent.mod_gallery_names_[__character]:
+                                            textbutton persistent.mod_gallery_names_[character]:
                                                 xalign 1.0
                                                 padding (0, 0, 0, 0)
-                                                action SetScreenVariable(u"active_field_name", __character)
+                                                action SetScreenVariable(u"active_field_name", character)
                                                 text_size __TEXT_SIZE
 
         textbutton u"Return" xalign 0.5 yalign 0.999 action ShowMenu(u"gallery_screen") text_size BOTTOM_TEXT_SIZE_
