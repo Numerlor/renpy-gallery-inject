@@ -28,7 +28,6 @@ def walk_sl_ast(wrapped_top_node):
         wrapped_node = todo.popleft()
         if isinstance(wrapped_node.node, (slast.SLIf, slast.SLShowIf)):
             # for ifs, yield the if node, but directly attribute its branch blocks to the parent node
-            yield wrapped_node
             for _, block in wrapped_node.node.entries:
                 wrapped_block = NodeWrapper(
                     block, wrapped_node.parent, wrapped_node.pos_in_parent
@@ -37,7 +36,7 @@ def walk_sl_ast(wrapped_top_node):
                     NodeWrapper(child, wrapped_block, pos)
                     for pos, child in enumerate(block.children)
                 )
-                yield wrapped_block
+            yield wrapped_node
 
         elif isinstance(wrapped_node.node, slast.SLBlock):
             todo.extend(
