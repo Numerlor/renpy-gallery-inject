@@ -20,6 +20,7 @@ from renpy.sl2 import slast
 
 from .ast_utils import *
 
+
 def add_button():
     # type: () -> None
     """Add a gallery button before the replay button, or at the top right if the button is not found."""
