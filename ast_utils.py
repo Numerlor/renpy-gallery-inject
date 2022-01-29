@@ -20,7 +20,7 @@ def walk_sl_ast(wrapped_top_node):
     """
     Yield all the child block nodes from the node in `wrapped_top_node`.
 
-    In case an SLIf or SLShowIf node is found, its blocks are yielded instead of the node itself.
+    In case an SLIf or SLShowIf node is found, their parent is the if's parent instead of the if itself.
     """
     todo = deque([wrapped_top_node])
 
