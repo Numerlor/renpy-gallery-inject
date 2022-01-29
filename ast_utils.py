@@ -272,3 +272,12 @@ def create_end_replay_node():
     """Create a new replay end node, load_patch_nodes must have been called beforehand."""
     assert _stop_replay_node is not None, u"template node not loaded with load_patch_nodes."
     return copy.copy(_stop_replay_node)
+
+
+def get_nth_after(node, n):
+    # type: (renpy.ast.Node, int) -> renpy.ast.Node | None
+    """Get the `n`th node after `node`."""
+    to_return = node
+    for _ in range(n):
+        to_return = to_return.next
+    return to_return
