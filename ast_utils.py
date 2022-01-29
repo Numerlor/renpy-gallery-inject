@@ -19,7 +19,7 @@ def walk_sl_ast(wrapped_top_node):
     # type: (NodeWrapper) -> Iterator[NodeWrapper]
     """
     Yield all the child block nodes from the node in `wrapped_top_node`.
-    
+
     In case an SLIf or SLShowIf node is found, its blocks are yielded instead of the node itself.
     """
     todo = deque([wrapped_top_node])
@@ -87,7 +87,7 @@ def find_say(query, start_nodes, return_previous=False):
 
     `query` should be a dict with the following structure {"who": sayer_name, "what": message},
     where either of the pairs is optional.
-    
+
     When the `ANY_LABEL` sentinel is passed to `start_nodes`, all labels are searched for the node.
 
     If return_previous is specified, return the node before the found node.
@@ -111,7 +111,7 @@ def find_code(var_names, start_nodes, return_previous=False):
 
     `var_names` may contain names of variables and attributes any code constants,
     if any of them is in the code, the node is seen as equal to the search.
-    
+
     When the `ANY_LABEL` sentinel is passed to `start_nodes`, all labels are searched for the node.
 
     If return_previous is specified, return the node before the found node.
