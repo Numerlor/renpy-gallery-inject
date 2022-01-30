@@ -252,7 +252,7 @@ _stop_replay_node = None
 def load_patch_nodes():
     """Load the nodes to patch with."""
     global _replay_label_node, _stop_replay_node
-    _replay_label_node = find_label(u"_patch_with")
+    _replay_label_node = find_label(u"patch_with_")
     _stop_replay_node = _replay_label_node.block[0]
     _replay_label_node.block = []
 

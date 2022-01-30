@@ -25,8 +25,8 @@ def add_button():
     # type: () -> None
     """Add a gallery button before the replay button, or at the top right if the button is not found."""
     screens = renpy.display.screen.screens_by_name
-    patch_screen = screens[u"_menu_gallery_button"][None].function
-    fallback_patch_screen = screens[u"_menu_gallery_button_fallback"][None].function
+    patch_screen = screens[u"menu_gallery_button_"][None].function
+    fallback_patch_screen = screens[u"menu_gallery_button_fallback_"][None].function
     screen_to_patch = screens[u"navigation"][None].function
 
     for wrapped_node in walk_sl_ast(NodeWrapper(screen_to_patch, None, 0)):

@@ -17,12 +17,12 @@ init 1 python:
     # do not include removed names, but keep them in persistent in case they're re-added
     __characters = list(__default_names)
     __grouped_characters = [[] for __i in range(__NAME_COLS)]
-    for col, row in __product(
+    for __col, __row in __product(
         range(__ceil(float(len(__characters)) / __NAME_COLS)),
         range(__NAME_COLS),
     ):
         try:
-            __grouped_characters[row].append(__characters[col * __NAME_COLS + row])
+            __grouped_characters[__row].append(__characters[__col * __NAME_COLS + __row])
         except IndexError:
             break
     __grouped_characters = list(filter(None, __grouped_characters))
@@ -32,7 +32,7 @@ init 1 python:
 
 define __reset_selection = SetScreenVariable(u"active_field_name", None)
 
-screen name_change_screen():
+screen name_change_screen_():
     default active_field_name = None
     key "K_RETURN" action __reset_selection
     key "K_KP_ENTER" action __reset_selection
@@ -68,7 +68,7 @@ screen name_change_screen():
                                                 action SetScreenVariable(u"active_field_name", character)
                                                 text_size __TEXT_SIZE
 
-        textbutton u"Return" xalign 0.5 yalign 0.999 action ShowMenu(u"gallery_screen") text_size BOTTOM_TEXT_SIZE_
+        textbutton u"Return" xalign 0.5 yalign 0.999 action ShowMenu(u"gallery_screen_") text_size BOTTOM_TEXT_SIZE_
 
 init python:
      from collections import OrderedDict as __OrderedDict

@@ -3,13 +3,13 @@
 
 define BOTTOM_TEXT_SIZE_ = 30
 
-screen _menu_gallery_button():
+screen menu_gallery_button_():
     if not _in_replay:
-        textbutton _("Gallery") action ShowMenu("gallery_screen")
+        textbutton _("Gallery") action ShowMenu("gallery_screen_")
 
-screen _menu_gallery_button_fallback():
+screen menu_gallery_button_fallback_():
     if not _in_replay:
-        textbutton _("Gallery") xalign 0.99 yalign 0 text_size 25 action ShowMenu("gallery_screen")
+        textbutton _("Gallery") xalign 0.99 yalign 0 text_size 25 action ShowMenu("gallery_screen_")
 
-label _patch_with:
+label patch_with_:
     $ renpy.end_replay()
