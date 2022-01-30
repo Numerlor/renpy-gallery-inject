@@ -57,9 +57,6 @@ screen gallery_screen_(replay_items):
             yalign 0.999
             text_size BOTTOM_TEXT_SIZE_
 
-transform __grid_scale:
-    fit "contain"
-    xysize (0.9, 0.9)
 
 init 999 python:
     import gallery as __gallery

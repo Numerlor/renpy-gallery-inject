@@ -11,5 +11,9 @@ screen menu_gallery_button_fallback_():
     if not _in_replay:
         textbutton _("Gallery") xalign 0.99 yalign 0 text_size 25 action ShowMenu("gallery_screen_", replay_defs_)
 
+transform grid_scale_:
+    fit "contain"
+    xysize (0.9, 0.9)
+
 label patch_with_:
     $ renpy.end_replay()
