@@ -4,29 +4,19 @@
 init python:
     from math import ceil as __ceil
 
-init offset = 10
-
-define __NAVIGATION_TEXT_SIZE = 50  # size of navigation arrows
-define __X_SPACING = 10
-define __Y_SPACING = 15
-define __COLS = 3
-define __ROWS = 3
-define __ITEM_COUNT = __COLS * __ROWS
-
-init offset = 0
 
 screen gallery_select_screen_():
     default page_index = 0
-    default max_page_count = int(__ceil(float(len(GALLERIES_)) / __ITEM_COUNT))
+    default max_page_count = int(__ceil(float(len(GALLERIES_)) / GALLERY_ITEM_COUNT_))
     tag menu
     use game_menu(_(u"Gallery")):
-        grid __COLS __ROWS:
+        grid GALLERY_COLS_ GALLERY_ROWS_:
             xfill True
-            xspacing __X_SPACING
-            yspacing __Y_SPACING
+            xspacing GALLERY_X_SPACING_
+            yspacing NAME_CHANGE_Y_SPACING_
 
-            $ list_offset = __ROWS * __COLS * page_index
-            $ active_button_count = __ITEM_COUNT - (__ITEM_COUNT - min(__ITEM_COUNT, len(GALLERIES_) - list_offset))
+            $ list_offset = GALLERY_ROWS_ * GALLERY_COLS_ * page_index
+            $ active_button_count = GALLERY_ITEM_COUNT_ - (GALLERY_ITEM_COUNT_ - min(GALLERY_ITEM_COUNT_, len(GALLERIES_) - list_offset))
 
             for i in range(active_button_count):
                 $ item = GALLERIES_[list_offset + i]
@@ -36,20 +26,20 @@ screen gallery_select_screen_():
                     action ShowMenu("gallery_screen_", item.replay_item_list)
                     at grid_scale_
 
-            for i in range(__ITEM_COUNT - active_button_count):
+            for i in range(GALLERY_ITEM_COUNT_ - active_button_count):
                 null
 
         textbutton u">":
             action SetScreenVariable(u"page_index", (page_index + 1) % max_page_count)
             xalign 0.9
             yalign 0.999
-            text_size __NAVIGATION_TEXT_SIZE
+            text_size GALLERY_NAVIGATION_TEXT_SIZE_
 
         textbutton u"<":
             action SetScreenVariable(u"page_index", (page_index - 1) % max_page_count)
             xalign 0.1
             yalign 0.999
-            text_size __NAVIGATION_TEXT_SIZE
+            text_size GALLERY_NAVIGATION_TEXT_SIZE_
 
         textbutton u"Change names":
             action ShowMenu(u"name_change_screen_", u"gallery_select_screen_")
