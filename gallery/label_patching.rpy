@@ -14,6 +14,9 @@ init 999 python hide:
         ANY_LABEL,
     )
     load_patch_nodes()  # initialize nodes to patch with, require call
+    # The usual statements to hook into are shows/scenes for the starts and jumps for the end
+    # so that the replay stats with an image shown,
+    # but our script doesn't have those so we use the say statements
 
     # find a say that says "5" in any label, says are wrapped in translations so get the node after that
     replay1_star_node = find_say({"what": u"5"}, ANY_LABEL).next
