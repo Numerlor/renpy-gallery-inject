@@ -32,8 +32,8 @@ def add_button():
     for wrapped_node in walk_sl_ast(NodeWrapper(screen_to_patch, None, 0)):
         if isinstance(wrapped_node.node, (slast.SLIf, slast.SLShowIf)):
             if any(u"_in_replay" in entry for entry in wrapped_node.node.entries):
-                wrapped_node.parent.parent.node.children.insert(
-                    wrapped_node.parent.pos_in_parent - 1, patch_screen
+                wrapped_node.parent.node.children.insert(
+                    wrapped_node.pos_in_parent - 1, patch_screen
                 )
                 break
     else:
