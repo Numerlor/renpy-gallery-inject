@@ -32,6 +32,7 @@ screen gallery_screen_(replay_items):
                 $ item = replay_items[list_offset + i]
                 imagebutton:
                     idle item.image
+                    hover im.MatrixColor(item.image, im.matrix.brightness(0.1))
                     action Replay(item.label, scope=item.scope_func(), locked=False)
                     at __grid_scale
 
