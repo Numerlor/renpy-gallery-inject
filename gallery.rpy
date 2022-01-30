@@ -31,8 +31,8 @@ screen gallery_screen_(replay_items):
             for i in range(active_button_count):
                 $ item = replay_items[list_offset + i]
                 imagebutton:
-                    idle item[0]
-                    action Replay(item[1], scope=item[2](), locked=False)
+                    idle item.image
+                    action Replay(item.label, scope=item.scope_func(), locked=False)
                     at __grid_scale
 
             for i in range(__ITEM_COUNT - active_button_count):
