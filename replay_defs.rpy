@@ -1,6 +1,8 @@
 # This file is a part of renpy-gallery-inject, see __init__.py for more details.
 # Copyright (C) 2022 Numerlor
 
+init offset = -1
+
 init python:
     def __default_scope():
         return {"player": Character(persistent.mod_gallery_names_["Player"])}
