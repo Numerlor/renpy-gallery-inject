@@ -10,7 +10,6 @@ init python:
         return {"player": Character(persistent.mod_gallery_names_["Player"])}
 
 define replay_defs_ = [
-    ReplayItem_("images/test.png", "replay1", __default_scope),
-    ReplayItem_("images/test.png", "replay2", __default_scope),
-    ReplayItem_("images/test.png", "test_label", __default_scope),
-]*8
+    ReplayItem_("test.png", "replay1", __default_scope),
+    ReplayItem_("test.png", "replay2", __default_scope),
+]

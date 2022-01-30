@@ -6,7 +6,7 @@ init python:
 
 init offset = 10
 
-define __NAVIGATION_TEXT_SIZE = 50
+define __NAVIGATION_TEXT_SIZE = 50  # size of navigation arrows
 define __X_SPACING = 10
 define __Y_SPACING = 15
 define __COLS = 3

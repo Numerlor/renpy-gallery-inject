@@ -72,5 +72,6 @@ screen name_change_screen_(gallery_replay_items):
 
 init python:
      from collections import OrderedDict as __OrderedDict
+     # Names configurable by the user, stored in the persistent.mod_gallery_names_ dict
      __default_names = __OrderedDict(("test{}".format(i), "default" * 2) for i in range(10))
      __default_names["Player"] = "name"

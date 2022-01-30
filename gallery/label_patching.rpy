@@ -13,14 +13,19 @@ init 999 python:
         create_end_replay_node as __create_end_replay_node,
         ANY_LABEL as __ANY_LABEL,
     )
-    __load_patch_nodes()
+    __load_patch_nodes()  # initialize nodes to patch with, require call
 
-    __label = __find_label(u"start")
-    __to_replace = __find_say({"what": u"5"}, __ANY_LABEL)
+    # find a say that says "5" in any label, says are wrapped in translations so get the node after that
+    __replay1_star_node = __find_say({"what": u"5"}, __ANY_LABEL).next
+    # create a replay1 label after the found say from above
+    __patch_after_node(__replay1_star_node, __create_replay_label(u"replay1"))
 
-    __patch_after_node(__to_replace, __create_replay_label(u"replay1"), set_name=False)
+    __start_label = __find_label(u"start")  # find the start label
+    # find a say that says "8" after the start label, and get the end translation node from after it
+    __replay1_end_node = __find_say({"what": u"8"}, [__start_label]).next
+    # patch in an end replay statement after the found say
+    __replay1_end_replay_node = __create_end_replay_node()
+    __patch_after_node(__replay1_end_node, __replay1_end_replay_node)
 
-    __label = __find_label(u"start")
-    __to_replace = __find_say({"what": u"8"}, __ANY_LABEL)
-
-    __patch_after_node(__to_replace, __create_replay_label(u"replay2"), set_name=False)
+    # place replay2 label immediately after the previous end node, let it continue until a return
+    __patch_after_node(__replay1_end_replay_node, __create_replay_label(u"replay2"))

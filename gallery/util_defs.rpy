@@ -1,7 +1,7 @@
 # This file is a part of renpy-gallery-inject, see __init__.py for more details.
 # Copyright (C) 2022 Numerlor
 
-define BOTTOM_TEXT_SIZE_ = 30
+define BOTTOM_TEXT_SIZE_ = 30  # text at the bottom of the screen, e.g. 'Change name' or 'Return'
 
 screen menu_gallery_button_():
     if not _in_replay:
