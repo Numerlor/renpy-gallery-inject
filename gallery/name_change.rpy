@@ -32,7 +32,7 @@ init 1 python:
 
 define __reset_selection = SetScreenVariable(u"active_field_name", None)
 
-screen name_change_screen_(return_menu, return_menu_arg):
+screen name_change_screen_(return_menu):
     default active_field_name = None
     key "K_RETURN" action __reset_selection
     key "K_KP_ENTER" action __reset_selection
@@ -68,7 +68,7 @@ screen name_change_screen_(return_menu, return_menu_arg):
                                                 action SetScreenVariable(u"active_field_name", character)
                                                 text_size __TEXT_SIZE
 
-        textbutton u"Back" xalign 0.5 yalign 0.999 action ShowMenu(return_menu, return_menu_arg) text_size BOTTOM_TEXT_SIZE_
+        textbutton u"Back" xalign 0.5 yalign 0.999 action ShowMenu(return_menu) text_size BOTTOM_TEXT_SIZE_
 
 init python:
      from collections import OrderedDict as __OrderedDict
