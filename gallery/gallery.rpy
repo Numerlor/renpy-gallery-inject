@@ -13,7 +13,7 @@ screen gallery_screen_(replay_items):
         grid GALLERY_COLS_ GALLERY_ROWS_:
             xfill True
             xspacing GALLERY_X_SPACING_
-            yspacing NAME_CHANGE_Y_SPACING_
+            yspacing GALLERY_Y_SPACING_
 
             $ list_offset = GALLERY_ROWS_ * GALLERY_COLS_ * page_index
             $ active_button_count = GALLERY_ITEM_COUNT_ - (GALLERY_ITEM_COUNT_ - min(GALLERY_ITEM_COUNT_, len(replay_items) - list_offset))
