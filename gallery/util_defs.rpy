@@ -23,7 +23,7 @@ screen menu_gallery_select_button_fallback_():
 
 transform grid_scale_:
     fit "contain"
-    xysize (0.9, 0.9)
+    xysize (1.0, 1.0)
 
 label patch_with_:
     $ renpy.end_replay()
