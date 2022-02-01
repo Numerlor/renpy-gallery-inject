@@ -36,22 +36,30 @@ define FALLBACK_BUTTON_SIZE_ = 35
 
 init python:
     from collections import namedtuple as __namedtuple, OrderedDict as __OrderedDict
+    from gallery import grouper as __grouper
     ReplayItem_ = __namedtuple("ReplayItem_", ["image", "label", "scope_func"])
     GalleryItem_ = __namedtuple("GalleryItem_", ["image", "replay_item_list"])
 
     def __default_scope():
         return {"player": Character(persistent.mod_gallery_names_["Player"])}
 
+# Items are grouped into pages by the grouper function
 # List of replay items used by galleries, main_gallery_replay_items is used when USE_GALLERY_SELECTION_SCREEN_ is False
-define main_gallery_replay_items = [
-    ReplayItem_("test.png", "replay1", __default_scope),
-    ReplayItem_("test.png", "replay2", __default_scope),
-]
+define main_gallery_replay_items = __grouper(
+    [
+        ReplayItem_("test.png", "replay1", __default_scope),
+        ReplayItem_("test.png", "replay2", __default_scope),
+    ],
+    GALLERY_ITEM_COUNT_,
+)
 
 # List of galleries and their replay items if the gallery selection is enabled
-define GALLERIES_ = [
-   GalleryItem_("test.png", main_gallery_replay_items)
-]
+define GALLERIES_ = __grouper(
+    [
+        GalleryItem_("test.png", main_gallery_replay_items),
+    ],
+    GALLERY_ITEM_COUNT_,
+)
 
 # Names configurable by the user and their defaults, stored in persistent.mod_gallery_names_,
 # to use in the scopes passed to replay items

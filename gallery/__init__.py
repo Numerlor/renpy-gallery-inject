@@ -14,6 +14,9 @@
 # You should have received a copy of the GNU General Public License
 # along with renpy-gallery-inject.  If not, see <https://www.gnu.org/licenses/>.
 
+from collections import Iterable
+from itertools import islice
+
 import renpy
 import renpy.display.screen
 from renpy.sl2 import slast
@@ -43,3 +46,10 @@ def add_button(use_selection_screen, force_fallback_button):
                     return
 
     screen_to_patch.children.append(fallback_patch_screen)
+
+
+def grouper(iterable, n):
+    # type: (Iterable[T], int) -> tuple[tuple[T], ...]
+    """Group items from iterable into `n` sized chunks, the last chunk may be smaller than n."""
+    it = iter(iterable)
+    return tuple(iter(lambda: tuple(islice(it, n)), ()))

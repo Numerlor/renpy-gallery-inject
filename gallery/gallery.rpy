@@ -38,12 +38,11 @@ screen gallery_select_screen_():
 
 
 # Gallery template screen with a grid of image buttons created from items, clicking on a button
-# Triggers the action returned by the call action_function(item) where item is one of the items from the items param
+# Triggers the action returned by the call action_function(item),
+# where item is one of the items from the paged_items param
 # Transient element is at the end after defining the grid and navigation buttons
-screen gallery_screen_(items, action_function):
-
+screen gallery_screen_(paged_items, action_function):
     default page_index = 0
-    default max_page_count = int(__ceil(float(len(items)) / GALLERY_ITEM_COUNT_))
 
     use game_menu(_(u"Gallery")):
         vpgrid:
@@ -55,28 +54,24 @@ screen gallery_screen_(items, action_function):
             xspacing GALLERY_X_SPACING_
             yspacing GALLERY_Y_SPACING_
 
-            $ list_offset = GALLERY_ROWS_ * GALLERY_COLS_ * page_index
-            $ active_button_count = GALLERY_ITEM_COUNT_ - (GALLERY_ITEM_COUNT_ - min(GALLERY_ITEM_COUNT_, len(items) - list_offset))
-
-            for i in range(active_button_count):
-                $ item = items[list_offset + i]
+            for item in paged_items[page_index]:
                 imagebutton:
                     idle item.image
                     hover im.MatrixColor(item.image, im.matrix.brightness(0.1))
                     action action_function(item)
                     at grid_scale_
 
-            for i in range(GALLERY_ITEM_COUNT_ - active_button_count):
+            for i in range(GALLERY_ITEM_COUNT_ - len(paged_items[page_index])):
                 null
 
         textbutton u">":
-            action SetLocalVariable(u"page_index", (page_index + 1) % max_page_count)
+            action SetLocalVariable(u"page_index", (page_index + 1) % len(paged_items))
             xalign 0.9
             yalign 0.999
             text_size GALLERY_NAVIGATION_TEXT_SIZE_
 
         textbutton u"<":
-            action SetLocalVariable(u"page_index", (page_index - 1) % max_page_count)
+            action SetLocalVariable(u"page_index", (page_index - 1) % len(paged_items))
             xalign 0.1
             yalign 0.999
             text_size GALLERY_NAVIGATION_TEXT_SIZE_
