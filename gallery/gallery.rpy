@@ -37,10 +37,10 @@ screen gallery_select_screen_():
             text_size BOTTOM_TEXT_SIZE_
 
 
-# Gallery template screen with a grid of image buttons created from items, clicking on a button
-# Triggers the action returned by the call action_function(item),
-# where item is one of the items from the paged_items param
-# Transient element is at the end after defining the grid and navigation buttons
+# Gallery template screen with a grid of image buttons created from paged_items, clicking on a button
+# triggers the action returned by the call action_function(item),
+# where item is one of the items from the paged_items param.
+# Transclude is at the end after defining the grid and navigation buttons.
 screen gallery_screen_(paged_items, action_function):
     default page_index = 0
 
