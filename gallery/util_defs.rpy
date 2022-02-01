@@ -5,11 +5,11 @@
 
 screen menu_gallery_button_():
     if not _in_replay:
-        textbutton _("Gallery") action ShowMenu("gallery_screen_", main_gallery_replay_items)
+        textbutton _("Gallery") action ShowMenu("replay_gallery_screen_", main_gallery_replay_items)
 
 screen menu_gallery_button_fallback_():
     if not _in_replay:
-        textbutton _("Gallery") xalign 0.99 yalign 0 text_size 25 action ShowMenu("gallery_screen_", main_gallery_replay_items)
+        textbutton _("Gallery") xalign 0.99 yalign 0 text_size 25 action ShowMenu("replay_gallery_screen_", main_gallery_replay_items)
 
 # buttons used to jump to a gallery selection screen
 
