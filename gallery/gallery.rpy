@@ -85,4 +85,4 @@ screen gallery_screen_(items, action_function):
 
 init 999 python:
     import gallery as __gallery
-    __gallery.add_button(USE_GALLERY_SELECTION_SCREEN_)
+    __gallery.add_button(USE_GALLERY_SELECTION_SCREEN_, FORCE_FALLBACK_BUTTON_)

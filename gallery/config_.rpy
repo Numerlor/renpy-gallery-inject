@@ -27,6 +27,8 @@ define GALLERY_COLS_ = 3
 define GALLERY_ROWS_ = 3
 define GALLERY_ITEM_COUNT_ = GALLERY_COLS_ * GALLERY_ROWS_
 
+# Force use of the fallback button if the position in the menu is undesirable
+define FORCE_FALLBACK_BUTTON_ = False
 # Properties applied to the fallback gallery button which is used if a position in the menu can't be found.
 define FALLBACK_BUTTON_X_ALIGN_ = 0.99
 define FALLBACK_BUTTON_Y_ALIGN_ = 0.0

@@ -21,8 +21,8 @@ from renpy.sl2 import slast
 from .ast_utils import *
 
 
-def add_button(use_selection_screen):
-    # type: (bool) -> None
+def add_button(use_selection_screen, force_fallback_button):
+    # type: (bool, bool) -> None
     """Add a gallery button before the replay button, or at the top right if the button is not found."""
     screens = renpy.display.screen.screens_by_name
     if use_selection_screen:
@@ -33,12 +33,13 @@ def add_button(use_selection_screen):
         fallback_patch_screen = screens[u"menu_gallery_button_fallback_"][None].function
     screen_to_patch = screens[u"navigation"][None].function
 
-    for wrapped_node in walk_sl_ast(NodeWrapper(screen_to_patch, None, 0)):
-        if isinstance(wrapped_node.node, (slast.SLIf, slast.SLShowIf)):
-            if any(u"_in_replay" in entry for entry in wrapped_node.node.entries):
-                wrapped_node.parent.node.children.insert(
-                    wrapped_node.pos_in_parent - 1, patch_screen
-                )
-                break
-    else:
-        screen_to_patch.children.append(fallback_patch_screen)
+    if not force_fallback_button:
+        for wrapped_node in walk_sl_ast(NodeWrapper(screen_to_patch, None, 0)):
+            if isinstance(wrapped_node.node, (slast.SLIf, slast.SLShowIf)):
+                if any(u"_in_replay" in entry for entry in wrapped_node.node.entries):
+                    wrapped_node.parent.node.children.insert(
+                        wrapped_node.pos_in_parent - 1, patch_screen
+                    )
+                    return
+
+    screen_to_patch.children.append(fallback_patch_screen)
