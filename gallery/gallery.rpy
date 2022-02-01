@@ -10,8 +10,12 @@ screen gallery_screen_(replay_items):
     default max_page_count = int(__ceil(float(len(replay_items)) / GALLERY_ITEM_COUNT_))
     tag menu
     use game_menu(_(u"Gallery")):
-        grid GALLERY_COLS_ GALLERY_ROWS_:
+        vpgrid:
+            ymaximum .9
             xfill True
+            yfill True
+            cols GALLERY_COLS_
+            rows GALLERY_ROWS_
             xspacing GALLERY_X_SPACING_
             yspacing GALLERY_Y_SPACING_
 
