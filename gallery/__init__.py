@@ -27,14 +27,13 @@ from .ast_utils import *
 def add_button(use_selection_screen, force_fallback_button):
     # type: (bool, bool) -> None
     """Add a gallery button before the replay button, or at the top right if the button is not found."""
-    screens = renpy.display.screen.screens_by_name
     if use_selection_screen:
-        patch_screen = screens[u"menu_gallery_select_button_"][None].function
-        fallback_patch_screen = screens[u"menu_gallery_select_button_fallback_"][None].function
+        patch_screen = renpy.display.screen.get_screen_variant(u"menu_gallery_select_button_").function
+        fallback_patch_screen = renpy.display.screen.get_screen_variant(u"menu_gallery_select_button_fallback_").function
     else:
-        patch_screen = screens[u"menu_gallery_button_"][None].function
-        fallback_patch_screen = screens[u"menu_gallery_button_fallback_"][None].function
-    screen_to_patch = screens[u"navigation"][None].function
+        patch_screen = renpy.display.screen.get_screen_variant(u"menu_gallery_button_").function
+        fallback_patch_screen = renpy.display.screen.get_screen_variant(u"menu_gallery_button_fallback_").function
+    screen_to_patch = renpy.display.screen.get_screen_variant(u"navigation").function
 
     if not force_fallback_button:
         for wrapped_node in walk_sl_ast(NodeWrapper(screen_to_patch, None, 0)):
