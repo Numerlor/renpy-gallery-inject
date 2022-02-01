@@ -44,20 +44,20 @@ init python:
         return {"player": Character(persistent.mod_gallery_names_["Player"])}
 
 # Items are grouped into pages by the grouper function
-# List of replay items used by galleries, main_gallery_replay_items is used when USE_GALLERY_SELECTION_SCREEN_ is False
-define main_gallery_replay_items = __grouper(
+# List of replay items used by galleries, MAIN_GALLERY_REPLAY_ITEMS_ is used when USE_GALLERY_SELECTION_SCREEN_ is False
+define MAIN_GALLERY_REPLAY_ITEMS_ = __grouper(
     [
         ReplayItem_("test.png", "replay1", __default_scope),
         ReplayItem_("test.png", "replay2", __default_scope),
-    ],
+    ]*10,
     GALLERY_ITEM_COUNT_,
 )
 
 # List of galleries and their replay items if the gallery selection is enabled
 define GALLERIES_ = __grouper(
     [
-        GalleryItem_("test.png", main_gallery_replay_items),
-    ],
+        GalleryItem_("test.png", MAIN_GALLERY_REPLAY_ITEMS_),
+    ]*10,
     GALLERY_ITEM_COUNT_,
 )
 
