@@ -35,7 +35,7 @@ init python:
     def __default_scope():
         return {"player": Character(persistent.mod_gallery_names_["Player"])}
 
-# Lists of replay items used by galleries, main_gallery_replay_items is used when USE_GALLERY_SELECTION_SCREEN_ is False
+# List of replay items used by galleries, main_gallery_replay_items is used when USE_GALLERY_SELECTION_SCREEN_ is False
 define main_gallery_replay_items = [
     ReplayItem_("test.png", "replay1", __default_scope),
     ReplayItem_("test.png", "replay2", __default_scope),
