@@ -2,8 +2,6 @@
 # Copyright (C) 2022 Numerlor
 
 init python:
-    from math import ceil as __ceil
-
     def __create_gallery_select_show_action(item):
         return ShowMenu(u"replay_gallery_screen_", item.replay_item_list)
 
