@@ -19,7 +19,7 @@ screen replay_gallery_screen_(replay_items):
                 text_size BOTTOM_TEXT_SIZE_
         else:
             textbutton u"Change names":
-                action ShowMenu(u"name_change_screen_", u"gallery_screen_", replay_items)
+                action ShowMenu(u"name_change_screen_", u"replay_gallery_screen_", replay_items)
                 xalign 0.5
                 yalign 0.999
                 text_size BOTTOM_TEXT_SIZE_
