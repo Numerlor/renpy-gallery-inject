@@ -25,7 +25,7 @@ init 999 python hide:
 
     start_label = find_label(u"start")  # find the start label
     # find a say that says "8" after the start label, and get the end translation node from after it
-    replay1_end_node = find_say({"what": u"8"}, [start_label]).next
+    replay1_end_node = find_say({"what": u"8"}, start_label).next
     # patch in an end replay statement after the found say
     replay1_end_replay_node = create_end_replay_node()
     patch_after_node(replay1_end_node, replay1_end_replay_node)

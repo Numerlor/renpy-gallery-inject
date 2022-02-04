@@ -46,17 +46,17 @@ def walk_sl_ast(wrapped_top_node):
             yield wrapped_node
 
 
-def _find_node(type_, predicate, start_nodes, return_previous):
-    # type: (type, Callable, list[renpy.ast.Node], bool) -> renpy.ast.Node | None
+def _find_node(type_, predicate, start_node, return_previous):
+    # type: (type, Callable, renpy.ast.Node, bool) -> renpy.ast.Node | None
     """
     Find the node of `type_` for which predicate returns True, if return_previous is true, return the node before.
 
     If nodes to try is ANY_LABEL, try to find the node under all labels.
     """
-    if start_nodes is ANY_LABEL:
+    if start_node is ANY_LABEL:
         nodes_to_try = [node for node in renpy.game.script.namemap.values() if isinstance(node, renpy.ast.Label)]
     else:
-        nodes_to_try = start_nodes
+        nodes_to_try = [start_node]
 
     for start_node in nodes_to_try:
         previous_node = None
