@@ -11,7 +11,6 @@ from renpy.sl2 import slast
 ANY_LABEL = object()
 _MISSING = object()
 
-
 NodeWrapper = namedtuple("NodeWrapper", ["node", "parent", "pos_in_parent"])
 
 
@@ -45,6 +44,24 @@ def walk_sl_ast(wrapped_top_node):
             )
             yield wrapped_node
 
+def walk_ast(node):
+    # type: (renpy.ast.Node) -> Iterator[renpy.ast.Node]
+    """Return list containing all nodes after `node`."""
+    flattened_tree = []
+    seen = set()
+
+    def add_node(node):
+        flattened_tree.append(node)
+        seen.add(node)
+
+    # Jumping into the middle of the ast, and our patches that don't go into blocks properly
+    # requires us to keep track of all the nodes to prevent duplicates and going over each node individually.
+    while node is not None:
+        node.get_children(add_node)
+        while node in seen:
+            node = node.next
+    return flattened_tree
+
 
 def _find_node(type_, predicate, start_node, return_previous):
     # type: (type, Callable, renpy.ast.Node, bool) -> renpy.ast.Node | None
@@ -60,9 +77,7 @@ def _find_node(type_, predicate, start_node, return_previous):
 
     for start_node in nodes_to_try:
         previous_node = None
-        child_nodes = []
-        start_node.get_children(child_nodes.append)
-        for node in child_nodes:
+        for node in walk_ast(start_node):
             if isinstance(node, type_) and predicate(node):
                 if return_previous:
                     return previous_node
