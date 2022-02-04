@@ -258,7 +258,8 @@ def load_patch_nodes():
 def create_replay_label(name):
     # type: (unicode) -> renpy.ast.Label
     """Create a new no-op label, load_patch_nodes must have been called beforehand."""
-    assert _replay_label_node is not None, u"template node not loaded with load_patch_nodes."
+    if _replay_label_node is None or _stop_replay_node is None:
+        load_patch_nodes()
     label = copy.copy(_replay_label_node)
     label.name = name
     renpy.game.script.namemap[name] = label
@@ -268,7 +269,8 @@ def create_replay_label(name):
 def create_end_replay_node():
     # type: () -> None
     """Create a new replay end node, load_patch_nodes must have been called beforehand."""
-    assert _stop_replay_node is not None, u"template node not loaded with load_patch_nodes."
+    if _replay_label_node is None or _stop_replay_node is None:
+        load_patch_nodes()
     return copy.copy(_stop_replay_node)
 
 
