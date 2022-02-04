@@ -59,12 +59,10 @@ def _find_node(type_, predicate, start_nodes, return_previous):
         nodes_to_try = start_nodes
 
     for start_node in nodes_to_try:
-        node = start_node
         previous_node = None
-        while True:
-            if node is None:
-                break
-            node = node.next
+        child_nodes = []
+        start_node.get_children(child_nodes.append)
+        for node in child_nodes:
             if isinstance(node, type_) and predicate(node):
                 if return_previous:
                     return previous_node
