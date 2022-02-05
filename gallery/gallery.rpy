@@ -55,7 +55,7 @@ screen gallery_screen_(paged_items, action_function):
             for item in paged_items[page_index]:
                 imagebutton:
                     idle item.image
-                    hover im.MatrixColor(item.image, im.matrix.brightness(0.1))
+                    hover item.hover_image
                     action action_function(item)
                     at grid_scale_
 

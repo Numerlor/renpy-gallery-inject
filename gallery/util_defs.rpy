@@ -35,3 +35,21 @@ transform grid_scale_:
 
 label patch_with_:
     $ renpy.end_replay()
+
+init -1 python:
+    from collections import namedtuple as __namedtuple
+
+    class ReplayItem_:
+        def __init__(self, image, label, scope_func):
+            self.image = renpy.easy.displayable(image)
+            self.label = label
+            self.scope_func = scope_func
+            self._hover_image = None
+
+        @property
+        def hover_image(self):
+            if self._hover_image is None:
+                self._hover_image = im.MatrixColor(self.image, im.matrix.brightness(0.1))
+            return self._hover_image
+
+    GalleryItem_ = __namedtuple("GalleryItem_", ["image", "replay_item_list"])

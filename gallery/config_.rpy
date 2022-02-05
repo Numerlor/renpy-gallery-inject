@@ -35,10 +35,8 @@ define FALLBACK_BUTTON_Y_ALIGN_ = 0.0
 define FALLBACK_BUTTON_SIZE_ = 35
 
 init python:
-    from collections import namedtuple as __namedtuple, OrderedDict as __OrderedDict
+    from collections import OrderedDict as __OrderedDict
     from gallery import grouper as __grouper
-    ReplayItem_ = __namedtuple("ReplayItem_", ["image", "label", "scope_func"])
-    GalleryItem_ = __namedtuple("GalleryItem_", ["image", "replay_item_list"])
 
     def __default_scope():
         return {"player": Character(persistent.mod_gallery_names_["Player"])}
