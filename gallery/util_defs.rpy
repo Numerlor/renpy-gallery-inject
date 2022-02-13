@@ -48,7 +48,7 @@ init -1 python:
         @property
         def hover_image(self):
             if self._hover_image is None:
-                self._hover_image = im.MatrixColor(self.image, im.matrix.brightness(0.1))
+                self._hover_image = Transform(self.image, matrixcolor=BrightnessMatrix(0.1))
             return self._hover_image
 
     GalleryItem_ = __namedtuple("GalleryItem_", ["image", "replay_item_list"])
