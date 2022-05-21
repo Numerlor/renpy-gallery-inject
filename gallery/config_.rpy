@@ -62,5 +62,5 @@ define GALLERIES_ = __grouper(
 # Names configurable by the user and their defaults, stored in persistent.mod_gallery_names_,
 # to use in the scopes passed to replay items
 init python:
-     default_names_ = __OrderedDict(("test{}".format(i), "default" * 2) for i in range(10))
-     default_names_["Player"] = "name"
+    default_names_ = __OrderedDict(("test{}".format(i), "default" * 2) for i in range(10))
+    default_names_["Player"] = "name"
