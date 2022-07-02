@@ -302,7 +302,7 @@ def _load_patch_nodes():
 def create_artificial_label(node, name):
     # type: (renpy.ast.Node, t.Text) -> None
     """Make `node` a "label" with `name`."""
-    renpy.game.script.namemap[name] = node
+    renpy.game.script.namemap[name] = copy.copy(node)
 
 
 def create_end_replay_node():
