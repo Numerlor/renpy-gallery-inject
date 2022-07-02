@@ -21,7 +21,7 @@ import renpy
 import renpy.display.screen
 from renpy.sl2 import slast
 
-from .ast_utils import *
+from .ast_utils import NodeWrapper, walk_sl_ast
 
 
 def add_button(use_selection_screen, force_fallback_button):
