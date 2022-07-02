@@ -16,12 +16,15 @@
 
 from collections import Iterable
 from itertools import islice
+import typing as t
 
 import renpy
 import renpy.display.screen
 from renpy.sl2 import slast
 
 from .ast_utils import NodeWrapper, walk_sl_ast
+
+T = t.TypeVar("T")
 
 
 def add_button(use_selection_screen, force_fallback_button):

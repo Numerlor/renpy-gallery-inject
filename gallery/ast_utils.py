@@ -4,6 +4,7 @@
 import copy
 import difflib
 from collections import Callable, deque, Iterator, namedtuple
+import typing as t
 
 import renpy.ast
 from renpy.sl2 import slast
@@ -86,7 +87,7 @@ def walk_ast(node):
 
 
 def _find_node(type_, predicate, start_node, return_previous):
-    # type: (type, Callable, renpy.ast.Node, bool) -> renpy.ast.Node | None
+    # type: (type[renpy.ast.Node], Callable, renpy.ast.Node, bool) -> renpy.ast.Node | None
     """
     Find the node of `type_` for which predicate returns True, if return_previous is true, return the node before.
 
@@ -110,7 +111,7 @@ def _find_node(type_, predicate, start_node, return_previous):
 
 
 def find_label(label_name):
-    # type: (unicode) -> renpy.ast.Label
+    # type: (t.Text) -> renpy.ast.Label
     """Return the label with the `label_name` name."""
     return renpy.game.script.lookup(label_name)
 
@@ -160,7 +161,7 @@ def find_code(var_names, start_node, return_previous=False):
 
 
 def find_jump(label_name, start_node, return_previous=False):
-    # type: (unicode, renpy.ast.Node, bool) -> renpy.ast.Node
+    # type: (t.Text, renpy.ast.Node, bool) -> renpy.ast.Node
     """
     Find the next jump node that jumps to `label_name` after any of `start_node`, the first matching node is returned.
 
@@ -198,7 +199,7 @@ def find_scene(query, start_node, return_previous=False):
 
 
 def find_show(name, start_node, return_previous=False):
-    # type: (unicode, renpy.ast.Node, bool) -> renpy.ast.Node
+    # type: (t.Text, renpy.ast.Node, bool) -> renpy.ast.Node
     """
     Find the next show statement showing `name` after any of `start_node`, the first matching node is returned.
 
@@ -214,7 +215,7 @@ def find_show(name, start_node, return_previous=False):
 
 
 def find_user_statement(name, params, start_node, return_previous=False):
-    # type: (unicode, dict, renpy.ast.Node, bool) -> renpy.ast.Node
+    # type: (t.Text, dict, renpy.ast.Node, bool) -> renpy.ast.Node
     """
     Find the next user statement executing `name` after any of `start_node`, the first matching node is returned.
 
@@ -266,6 +267,7 @@ def find_menu(start_node, return_previous=False):
 
 
 def mark_label_patched(node):
+    # type: (renpy.ast.Node) -> None
     """Mark the `node` as patched by prepending "patched_" to its filename."""
     node.filename = "patched_" + node.filename
 
@@ -289,6 +291,7 @@ _stop_replay_node = None
 
 
 def _load_patch_nodes():
+    # type: () -> None
     """Load the nodes to patch with."""
     global _stop_replay_node
     patch_label = find_label(u"patch_with_")
@@ -297,7 +300,7 @@ def _load_patch_nodes():
 
 
 def create_artificial_label(node, name):
-    # type: (renpy.ast.Node, unicode) -> None
+    # type: (renpy.ast.Node, t.Text) -> None
     """Make `node` a "label" with `name`."""
     renpy.game.script.namemap[name] = node
 
