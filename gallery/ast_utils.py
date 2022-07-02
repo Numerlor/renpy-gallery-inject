@@ -288,7 +288,7 @@ def patch_after_node(node, new_node, set_name=False):
 _stop_replay_node = None
 
 
-def load_patch_nodes():
+def _load_patch_nodes():
     """Load the nodes to patch with."""
     global _stop_replay_node
     patch_label = find_label(u"patch_with_")
@@ -306,7 +306,7 @@ def create_end_replay_node():
     # type: () -> None
     """Create a new replay end node, load_patch_nodes must have been called beforehand."""
     if _stop_replay_node is None:
-        load_patch_nodes()
+        _load_patch_nodes()
     return copy.copy(_stop_replay_node)
 
 
