@@ -25,7 +25,7 @@ init 1 python:
     default_names_.update(persistent.mod_gallery_names_)
     persistent.mod_gallery_names_ = default_names_
 
-define __reset_selection = SetScreenVariable(u"active_field_name", None)
+define __reset_selection = SetScreenVariable("active_field_name", None)
 
 screen name_change_screen_(return_menu, *return_args):
     default active_field_name = None
@@ -34,7 +34,7 @@ screen name_change_screen_(return_menu, *return_args):
     key "mouseup_1" action __reset_selection
 
     tag menu
-    use game_menu(_(u"Gallery")):
+    use game_menu(_("Gallery")):
         vpgrid:
             ymaximum .9
             xfill True
@@ -60,8 +60,7 @@ screen name_change_screen_(return_menu, *return_args):
                                             textbutton persistent.mod_gallery_names_[character]:
                                                 xalign 1.0
                                                 padding (0, 0, 0, 0)
-                                                action SetScreenVariable(u"active_field_name", character)
+                                                action SetScreenVariable("active_field_name", character)
                                                 text_size NAME_CHANGE_TEXT_SIZE_
 
-        textbutton u"Back" xalign 0.5 yalign 0.999 action ShowMenu(return_menu, *return_args) text_size BOTTOM_TEXT_SIZE_
-
+        textbutton "Back" xalign 0.5 yalign 0.999 action ShowMenu(return_menu, *return_args) text_size BOTTOM_TEXT_SIZE_
