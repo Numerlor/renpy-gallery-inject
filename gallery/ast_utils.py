@@ -44,6 +44,7 @@ def walk_sl_ast(wrapped_top_node):
             )
             yield wrapped_node
 
+
 def walk_ast(node):
     # type: (renpy.ast.Node) -> Iterator[renpy.ast.Node]
     """Return list containing all nodes after `node`."""
