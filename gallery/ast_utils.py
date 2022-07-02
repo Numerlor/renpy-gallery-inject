@@ -263,35 +263,27 @@ def patch_after_node(node, new_node, set_name=False):
     new_node.chain(original_next)
 
 
-_replay_label_node = None
 _stop_replay_node = None
 
 
 def load_patch_nodes():
     """Load the nodes to patch with."""
-    global _replay_label_node, _stop_replay_node
-    _replay_label_node = copy.copy(find_label(u"patch_with_"))
-    mark_label_patched(_replay_label_node)
-    _stop_replay_node = copy.copy(_replay_label_node.block[0])
+    global _stop_replay_node
+    patch_label = find_label(u"patch_with_")
+    _stop_replay_node = copy.copy(patch_label.block[0])
     mark_label_patched(_stop_replay_node)
-    _replay_label_node.block = []
 
 
-def create_replay_label(name):
-    # type: (unicode) -> renpy.ast.Label
-    """Create a new no-op label, load_patch_nodes must have been called beforehand."""
-    if _replay_label_node is None or _stop_replay_node is None:
-        load_patch_nodes()
-    label = copy.copy(_replay_label_node)
-    label.name = name
-    renpy.game.script.namemap[name] = label
-    return label
+def create_artificial_label(node, name):
+    # type: (renpy.ast.Node, unicode) -> None
+    """Make `node` a "label" with `name`."""
+    renpy.game.script.namemap[name] = node
 
 
 def create_end_replay_node():
     # type: () -> None
     """Create a new replay end node, load_patch_nodes must have been called beforehand."""
-    if _replay_label_node is None or _stop_replay_node is None:
+    if _stop_replay_node is None:
         load_patch_nodes()
     return copy.copy(_stop_replay_node)
 
