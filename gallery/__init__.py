@@ -48,7 +48,7 @@ def add_button(use_selection_screen, force_fallback_button):
 
 
 def grouper(iterable, n):
-    # type: (Iterable[T], int) -> tuple[tuple[T], ...]
+    # type: (Iterable[T], int) -> tuple[tuple[T, ...], ...]
     """Group items from iterable into `n` sized chunks, the last chunk may be smaller than n."""
     it = iter(iterable)
     return tuple(iter(lambda: tuple(islice(it, n)), ()))
