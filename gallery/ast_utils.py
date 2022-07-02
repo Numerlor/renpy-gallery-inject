@@ -13,6 +13,27 @@ _MISSING = object()
 
 NodeWrapper = namedtuple("NodeWrapper", ["node", "parent", "pos_in_parent"])
 
+__all__ = [
+    "ANY_LABEL",
+    "NodeWrapper",
+    "walk_sl_ast",
+    "walk_ast",
+    "find_say",
+    "find_label",
+    "find_code",
+    "find_jump",
+    "find_scene",
+    "find_show",
+    "find_user_statement",
+    "find_return",
+    "find_menu",
+    "patch_after_node",
+    "mark_label_patched",
+    "create_artificial_label",
+    "create_end_replay_node",
+    "get_nth_after",
+]
+
 
 def walk_sl_ast(wrapped_top_node):
     # type: (NodeWrapper) -> Iterator[NodeWrapper]
