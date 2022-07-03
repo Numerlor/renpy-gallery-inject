@@ -128,7 +128,9 @@ class NodePathLog(object):
         """Change the current index to point to the node with the name `node_name`, if it is in this execution path."""
         renpy_node = renpy.game.script.namemap.get(node_name)
         if renpy_node is not None and not renpy_node.filename.startswith("patched"):
-            self.current_node = self._nodes.get(renpy_node)
+            wrapped_node = self._nodes.get(renpy_node)
+            if wrapped_node is not None:
+                self.current_node = wrapped_node
 
     def has_node(self, node):
         # type: (renpy.ast.Node) -> bool
