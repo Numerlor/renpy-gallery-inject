@@ -126,18 +126,9 @@ class NodePathLog(object):
     def update_from_new_node(self, node_name):
         # type: (t.Text) -> None
         """Change the current index to point to the node with the name `node_name`, if it is in this execution path."""
-        if node_name is None:
-            return
-
-        if isinstance(node_name, tuple):
-            string_name = node_name[0]
-        else:
-            string_name = node_name
-
-        if string_name.startswith("patched"):
-            return
-
-        self.current_node = self._nodes.get(renpy.game.script.namemap[node_name])
+        renpy_node = renpy.game.script.namemap.get(node_name)
+        if renpy_node is not None and not renpy_node.filename.startswith("patched"):
+            self.current_node = self._nodes.get(renpy_node)
 
     def has_node(self, node):
         # type: (renpy.ast.Node) -> bool
