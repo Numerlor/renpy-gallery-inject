@@ -3,7 +3,7 @@
 
 import copy
 import difflib
-from collections import Callable, deque, Iterator, namedtuple
+from collections import deque, namedtuple
 import typing as t
 
 import renpy.ast
@@ -37,7 +37,7 @@ __all__ = [
 
 
 def walk_sl_ast(wrapped_top_node):
-    # type: (NodeWrapper) -> Iterator[NodeWrapper]
+    # type: (NodeWrapper) -> t.Iterator[NodeWrapper]
     """
     Yield all the child block nodes from the node in `wrapped_top_node`.
 
@@ -68,7 +68,7 @@ def walk_sl_ast(wrapped_top_node):
 
 
 def walk_ast(node):
-    # type: (renpy.ast.Node) -> Iterator[renpy.ast.Node]
+    # type: (renpy.ast.Node) -> t.Iterator[renpy.ast.Node]
     """Return list containing all nodes after `node`."""
     flattened_tree = []
     seen = set()
@@ -87,7 +87,7 @@ def walk_ast(node):
 
 
 def _find_node(type_, predicate, start_node, return_previous):
-    # type: (type[renpy.ast.Node], Callable, renpy.ast.Node, bool) -> renpy.ast.Node | None
+    # type: (type[renpy.ast.Node], t.Callable, renpy.ast.Node, bool) -> renpy.ast.Node | None
     """
     Find the node of `type_` for which predicate returns True, if return_previous is true, return the node before.
 
