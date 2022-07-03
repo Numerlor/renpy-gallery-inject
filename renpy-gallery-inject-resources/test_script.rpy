@@ -1,4 +1,4 @@
-label start:
+label example_label:
     "1"
     "2"
     "3"
