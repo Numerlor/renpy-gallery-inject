@@ -7,7 +7,7 @@ from functools import partial
 import renpy
 import renpy.ast
 
-from gallery.ast_utils import find_label, mark_label_patched
+from gallery.ast_utils import find_label, mark_node_patched
 
 
 __all__ = [
@@ -30,25 +30,26 @@ class _PythonCallback(renpy.ast.Node):
         renpy.ast.next_node(self.next)
 
 
+_patch_label = None
 _black_scene_start = None
 _empty_say = None
 
 
 def _load_patch_nodes():
-    global _black_scene_start, _empty_say
-    label = find_label(u"_jump_nodes")
-    _black_scene_start = copy.copy(label.block[0])
-    mark_label_patched(_black_scene_start)
-    _empty_say = copy.copy(label.block[4])
-    mark_label_patched(_empty_say)
+    global _patch_label, _black_scene_start, _empty_say
+    _patch_label = find_label(u"_jump_nodes")
+    _black_scene_start = copy.copy(_patch_label.block[0])
+    mark_node_patched(_black_scene_start)
+    _empty_say = copy.copy(_patch_label.block[4])
+    mark_node_patched(_empty_say)
 
 
 def _get_scene_start_and_end():
     start = copy.copy(_black_scene_start)
     start.next = scene = copy.copy(start.next)
-    mark_label_patched(scene)
+    mark_node_patched(scene)
     scene.next = end = copy.copy(scene.next)
-    mark_label_patched(end)
+    mark_node_patched(end)
 
     return start, end
 

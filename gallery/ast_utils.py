@@ -29,7 +29,7 @@ __all__ = [
     "find_return",
     "find_menu",
     "patch_after_node",
-    "mark_label_patched",
+    "mark_node_patched",
     "create_artificial_label",
     "create_end_replay_node",
     "get_nth_after",
@@ -266,7 +266,7 @@ def find_menu(start_node, return_previous=False):
     return _find_node(renpy.ast.Menu, predicate, start_node, return_previous)
 
 
-def mark_label_patched(node):
+def mark_node_patched(node):
     # type: (renpy.ast.Node) -> None
     """Mark the `node` as patched by prepending "patched_" to its filename."""
     node.filename = "patched_" + node.filename
@@ -296,7 +296,7 @@ def _load_patch_nodes():
     global _stop_replay_node
     patch_label = find_label(u"patch_with_")
     _stop_replay_node = copy.copy(patch_label.block[0])
-    mark_label_patched(_stop_replay_node)
+    mark_node_patched(_stop_replay_node)
 
 
 def create_artificial_label(node, name):

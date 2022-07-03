@@ -17,7 +17,6 @@ init 999 python hide:
         find_return,
         find_menu,
         patch_after_node,
-        mark_label_patched,
         create_artificial_label,
         create_end_replay_node,
         get_nth_after,
