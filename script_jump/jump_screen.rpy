@@ -220,4 +220,3 @@ screen main_list_view(length):
 
 label _jump_nodes:
     scene black with None
-    ""

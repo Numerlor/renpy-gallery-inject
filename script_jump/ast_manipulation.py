@@ -18,17 +18,14 @@ __all__ = [
 
 _patch_label = None
 _black_scene_start = None
-_empty_say = None
 
 
 def _load_patch_nodes():
-    global _patch_label, _black_scene_start, _empty_say
+    global _patch_label, _black_scene_start
     _patch_label = copy.copy(find_label(u"_jump_nodes"))
     mark_node_patched(_patch_label)
     _black_scene_start = copy.copy(_patch_label.block[0])
     mark_node_patched(_black_scene_start)
-    _empty_say = copy.copy(_patch_label.block[4])
-    mark_node_patched(_empty_say)
 
 
 def _get_scene_start_and_end():
@@ -44,7 +41,7 @@ def _get_scene_start_and_end():
 def create_clear_label_to_node(node):
     # type: (renpy.ast.Node) -> str
     """Patch in a label that clears the scene and continues at `node`. The name of the label is returned."""
-    if _black_scene_start is None or _empty_say is None or _patch_label is None:
+    if _black_scene_start is None or _patch_label is None:
         _load_patch_nodes()
 
     label_name = str(time.time())
@@ -54,8 +51,7 @@ def create_clear_label_to_node(node):
 
     clear_start, clear_end = _get_scene_start_and_end()
     start.next = clear_start
-    clear_end.next = say_node = copy.copy(_empty_say)
-    say_node.next = node
+    clear_end.next = node
     return label_name
 
 
