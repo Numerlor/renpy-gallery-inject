@@ -8,7 +8,7 @@ init python:
 
     from script_jump.ast_manipulation import (
         executing_node as __executing_node,
-        patch_clear_after_node as __patch_clear_after_node,
+        create_clear_label_to_node as __create_clear_label_to_node,
     )
     from script_jump.execution_tracing import (
         NodePathLog as __NodePathLog,
@@ -63,8 +63,8 @@ init python:
 
 
     def __patch_label_and_jump(node):
-        __patch_clear_after_node(node)
-        renpy.jump(node.name)
+        jump_name = __create_clear_label_to_node(node)
+        renpy.jump(jump_name)
 
 
 screen Test():

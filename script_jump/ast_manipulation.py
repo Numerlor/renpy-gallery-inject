@@ -2,7 +2,7 @@
 # Copyright (C) 2022 Numerlor
 
 import copy
-from functools import partial
+import time
 
 import renpy
 import renpy.ast
@@ -12,22 +12,8 @@ from gallery.ast_utils import find_label, mark_node_patched
 
 __all__ = [
     "executing_node",
-    "patch_clear_after_node",
+    "create_clear_label_to_node",
 ]
-
-
-class _PythonCallback(renpy.ast.Node):
-    """Directly execute the passed `callback`."""
-
-    def __init__(self, loc, callback):
-        super(_PythonCallback, self).__init__(loc)
-        self.filename = "patched_" + self.filename
-        self.callback = callback
-        self.name = self.filename
-
-    def execute(self):
-        self.callback()
-        renpy.ast.next_node(self.next)
 
 
 _patch_label = None
@@ -37,7 +23,8 @@ _empty_say = None
 
 def _load_patch_nodes():
     global _patch_label, _black_scene_start, _empty_say
-    _patch_label = find_label(u"_jump_nodes")
+    _patch_label = copy.copy(find_label(u"_jump_nodes"))
+    mark_node_patched(_patch_label)
     _black_scene_start = copy.copy(_patch_label.block[0])
     mark_node_patched(_black_scene_start)
     _empty_say = copy.copy(_patch_label.block[4])
@@ -54,22 +41,22 @@ def _get_scene_start_and_end():
     return start, end
 
 
-def patch_clear_after_node(node):
-    # type: (renpy.ast.Node) -> None
-    """
-    Patch in a scene and say clear after `node`.
-
-    After the node is reached, its original next node is reattached.
-    """
-
-    original_next = node.next
-    python_node = node.next = _PythonCallback((node.filename, node.linenumber), partial(_attach_node, node, node.next))
-    if _black_scene_start is None or _empty_say is None:
+def create_clear_label_to_node(node):
+    # type: (renpy.ast.Node) -> str
+    """Patch in a label that clears the scene and continues at `node`. The name of the label is returned."""
+    if _black_scene_start is None or _empty_say is None or _patch_label is None:
         _load_patch_nodes()
+
+    label_name = str(time.time())
+    start = copy.copy(_patch_label)
+    start.name = label_name
+    renpy.game.script.namemap[label_name] = start
+
     clear_start, clear_end = _get_scene_start_and_end()
-    python_node.next = clear_start
+    start.next = clear_start
     clear_end.next = say_node = copy.copy(_empty_say)
-    say_node.next = original_next
+    say_node.next = node
+    return label_name
 
 
 def _attach_node(node, next_):
