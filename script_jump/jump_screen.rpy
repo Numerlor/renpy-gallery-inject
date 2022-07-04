@@ -15,6 +15,7 @@ init python:
         patch_context_notifier as __patch_context_notifier,
     )
     from script_jump.utils import (
+        escape_renpy_formatting as __escape_renpy_formatting,
         LogWrapper as __LogWrapper,
         NoRollbackValue as __NoRollbackValue,
     )
@@ -93,7 +94,7 @@ screen Test():
                     for wrapped_node in active_log.value.log.nodes:
                         vbox:
                             hbox ysize 20 xsize 250:
-                                textbutton str(wrapped_node):
+                                textbutton __escape_renpy_formatting(str(wrapped_node)):
                                     padding (0, 0, 0, 0)
                                     yalign 0.5
                                     text_size 10
@@ -123,7 +124,7 @@ screen Test():
                 for wrapped_log in logs:
                     vbox:
                         hbox xfill True ysize 20 xsize 250:
-                            textbutton str(next(iter(wrapped_log.log.nodes))):
+                            textbutton __escape_renpy_formatting(str(next(iter(wrapped_log.log.nodes)))):
                                 padding (0, 0, 0, 0)
                                 yalign 0.5
                                 text_size 10
@@ -157,7 +158,7 @@ screen fork_dropdown_list:
                     for log in forking_node.value.child_logs:
                         vbox:
                             hbox ysize 20 xsize 250:
-                                textbutton str(next(iter(log.nodes))):
+                                textbutton __escape_renpy_formatting(str(next(iter(log.nodes)))):
                                     padding (0, 0, 0, 0)
                                     yalign 0.5
                                     text_size 10

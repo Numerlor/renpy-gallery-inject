@@ -1,10 +1,13 @@
 # This file is a part of renpy-gallery-inject, see __init__.py for more details.
 # Copyright (C) 2022 Numerlor
 
+import re
+import sys
+import typing as t
+from functools import partial
+
 import renpy
 from renpy.defaultstore import NoRollback
-import typing as t
-import sys
 
 if t.TYPE_CHECKING:
     from .execution_tracing import NodePathLog
@@ -16,6 +19,7 @@ __all__ = [
     "removeprefix",
     "script_file_contents",
     "elide",
+    "escape_renpy_formatting",
 ]
 
 T = t.TypeVar("T")
@@ -80,3 +84,12 @@ def elide(string, length):
     if len(string) > length:
         return string[:length - 1] + u"\N{HORIZONTAL ELLIPSIS}"
     return string
+
+
+def _sub_brackets_with_escaped(match):
+    # type: (re.Match) -> t.Text
+    """Double up every bracket/brace matched by `match`."""
+    return match.group(0) * 2
+
+
+escape_renpy_formatting = partial(re.compile(r"\{+|\[+").sub, _sub_brackets_with_escaped)
