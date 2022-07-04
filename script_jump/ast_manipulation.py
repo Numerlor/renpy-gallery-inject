@@ -1,6 +1,8 @@
 # This file is a part of renpy-gallery-inject, see __init__.py for more details.
 # Copyright (C) 2022 Numerlor
 
+from __future__ import unicode_literals
+
 import copy
 import time
 
@@ -22,7 +24,7 @@ _black_scene_start = None
 
 def _load_patch_nodes():
     global _patch_label, _black_scene_start
-    _patch_label = copy.copy(find_label(u"_jump_nodes"))
+    _patch_label = copy.copy(find_label("_jump_nodes"))
     mark_node_patched(_patch_label)
     _black_scene_start = copy.copy(_patch_label.block[0])
     mark_node_patched(_black_scene_start)

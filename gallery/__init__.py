@@ -14,6 +14,8 @@
 # You should have received a copy of the GNU General Public License
 # along with renpy-gallery-inject.  If not, see <https://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 from collections import Iterable
 from itertools import islice
 import typing as t
@@ -31,17 +33,17 @@ def add_button(use_selection_screen, force_fallback_button):
     # type: (bool, bool) -> None
     """Add a gallery button before the replay button, or at the top right if the button is not found."""
     if use_selection_screen:
-        patch_screen = renpy.display.screen.get_screen_variant(u"menu_gallery_select_button_").function
-        fallback_patch_screen = renpy.display.screen.get_screen_variant(u"menu_gallery_select_button_fallback_").function
+        patch_screen = renpy.display.screen.get_screen_variant("menu_gallery_select_button_").function
+        fallback_patch_screen = renpy.display.screen.get_screen_variant("menu_gallery_select_button_fallback_").function
     else:
-        patch_screen = renpy.display.screen.get_screen_variant(u"menu_gallery_button_").function
-        fallback_patch_screen = renpy.display.screen.get_screen_variant(u"menu_gallery_button_fallback_").function
-    screen_to_patch = renpy.display.screen.get_screen_variant(u"navigation").function
+        patch_screen = renpy.display.screen.get_screen_variant("menu_gallery_button_").function
+        fallback_patch_screen = renpy.display.screen.get_screen_variant("menu_gallery_button_fallback_").function
+    screen_to_patch = renpy.display.screen.get_screen_variant("navigation").function
 
     if not force_fallback_button:
         for wrapped_node in walk_sl_ast(NodeWrapper(screen_to_patch, None, 0)):
             if isinstance(wrapped_node.node, (slast.SLIf, slast.SLShowIf)):
-                if any(u"_in_replay" in entry for entry in wrapped_node.node.entries):
+                if any("_in_replay" in entry for entry in wrapped_node.node.entries):
                     wrapped_node.parent.node.children.insert(
                         wrapped_node.pos_in_parent - 1, patch_screen
                     )

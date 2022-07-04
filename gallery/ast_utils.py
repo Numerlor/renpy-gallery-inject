@@ -1,6 +1,8 @@
 # This file is a part of renpy-gallery-inject, see __init__.py for more details.
 # Copyright (C) 2022 Numerlor
 
+from __future__ import unicode_literals
+
 import copy
 import difflib
 from collections import deque, namedtuple
@@ -192,7 +194,7 @@ def find_scene(query, start_node, return_previous=False):
     def predicate(node):
         return (
                 ("layer" not in query or node.layer == query["layer"])
-                and ("name" not in query or (node.imspec is not None and u" ".join(node.imspec[0]) == query["name"]))
+                and ("name" not in query or (node.imspec is not None and " ".join(node.imspec[0]) == query["name"]))
         )
 
     return _find_node(renpy.ast.Scene, predicate, start_node, return_previous)
@@ -209,7 +211,7 @@ def find_show(name, start_node, return_previous=False):
     """
 
     def predicate(node):
-        return node.imspec is not None and u" ".join(node.imspec[0]) == name
+        return node.imspec is not None and " ".join(node.imspec[0]) == name
 
     return _find_node(renpy.ast.Show, predicate, start_node, return_previous)
 
@@ -227,7 +229,7 @@ def find_user_statement(name, params, start_node, return_previous=False):
     """
 
     def predicate(node):
-        statement_name = u" ".join(node.parsed[0])
+        statement_name = " ".join(node.parsed[0])
         statement_params = node.parsed[1]
         return (
                 statement_name == name and all(params[key] == statement_params.get(key, _MISSING) for key in params)
@@ -294,7 +296,7 @@ def _load_patch_nodes():
     # type: () -> None
     """Load the nodes to patch with."""
     global _stop_replay_node
-    patch_label = find_label(u"patch_with_")
+    patch_label = find_label("patch_with_")
     _stop_replay_node = copy.copy(patch_label.block[0])
     mark_node_patched(_stop_replay_node)
 
