@@ -4,6 +4,7 @@
 from __future__ import unicode_literals
 
 import typing as t
+from collections import OrderedDict
 
 import renpy
 
@@ -96,7 +97,7 @@ class NodePathLog(object):
         assert _new_node_notifier is not None
         _new_node_notifier.add_callback(self.update_from_new_node)
 
-        self._nodes = {}
+        self._nodes = OrderedDict()
         self.current_node = None
         node = start_node
         call_stack = []
