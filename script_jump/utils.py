@@ -107,7 +107,7 @@ escape_renpy_formatting = partial(re.compile(r"\{+|\[+").sub, _sub_brackets_with
 
 
 def _scene_template(__wrapped_node):
-    # type: (NodeWrapper) -> t.Text
+    # type: (NodeWrapper[renpy.ast.Scene]) -> t.Text
     return 'find_scene({wrapped_node.label_name!r}, name={joined_name!r}, layer={wrapped_node.node.layer!r})'.format(
         joined_name=" ".join(__wrapped_node.node.imspec[0]),
         wrapped_node=__wrapped_node,
@@ -115,7 +115,7 @@ def _scene_template(__wrapped_node):
 
 
 def _show_template(__wrapped_node):
-    # type: (NodeWrapper) -> t.Text
+    # type: (NodeWrapper[renpy.ast.Show]) -> t.Text
     return 'find_show({wrapped_node.label_name!r}, {joined_name!r})'.format(
         joined_name=" ".join(__wrapped_node.node.imspec[0]),
         wrapped_node=__wrapped_node,
@@ -123,7 +123,7 @@ def _show_template(__wrapped_node):
 
 
 def _user_statement_template(__wrapped_node):
-    # type: (NodeWrapper) -> t.Text
+    # type: (NodeWrapper[renpy.ast.UserStatement]) -> t.Text
     return 'find_user_statement({wrapped_node.label_name!r}, {joined_name!r}, {wrapped_node.node.parsed})'.format(
         joined_name=" ".join(__wrapped_node.node.parsed[0]),
         wrapped_node=__wrapped_node,

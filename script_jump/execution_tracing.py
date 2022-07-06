@@ -27,7 +27,10 @@ def patch_context_notifier():
     renpy.execution.Context.current = _new_node_notifier = AttributeChangeNotifier("current")
 
 
-class NodeWrapper:
+_NodeT = t.TypeVar("_NodeT", bound=renpy.ast.Node)
+
+
+class NodeWrapper(t.Generic[_NodeT]):
     """
     Wrap a renpy ast node.
 
@@ -37,7 +40,7 @@ class NodeWrapper:
     __slots__ = ("node", "line", "label_name", "_child_logs")
 
     def __init__(self, node, label_name):
-        # type: (renpy.ast.Node, t.Text | None) -> None
+        # type: (_NodeT, t.Text | None) -> None
         self.node = node
         self.label_name = label_name
         self.line = elide(
