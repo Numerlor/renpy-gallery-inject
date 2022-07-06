@@ -75,7 +75,7 @@ init python:
             print(to_copy)
             __set_clipboard(to_copy)
 
-screen Test():
+screen ScriptLog():
     zorder 50
     default active_log = __NoRollbackValue(None)
     default visible = __NoRollbackValue(True)
