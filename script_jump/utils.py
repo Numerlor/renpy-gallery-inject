@@ -23,7 +23,7 @@ __all__ = [
     "script_file_contents",
     "elide",
     "escape_renpy_formatting",
-    "node_find_templates",
+    "get_node_find_string",
     "set_clipboard",
 ]
 
@@ -130,7 +130,17 @@ def _user_statement_template(__wrapped_node):
     )
 
 
-node_find_templates = {  # type: dict[type[renpy.ast.Node, t.Callable[[NodeWrapper], t.Text]]]
+def get_node_find_string(wrapped_node):
+    # type: (NodeWrapper) -> t.Text | None
+    """Get the string to find node in `wrapped_node`."""
+    template = _node_find_templates.get(type(wrapped_node.node))
+    if template is None:
+        return None
+    return template(wrapped_node)
+
+
+# dict[type[T], t.Callable[[NodeWrapper[T]], t.Text]]
+_node_find_templates = {
     renpy.ast.Say: 'find_say(find_label({0.label_name!r}), what={0.node.what!r}, who={0.node.who!r})'.format,
     renpy.ast.Label: 'find_label(find_label({0.label_name!r}), {0.node.name!r})'.format,
     renpy.ast.Jump: 'find_jump(find_label({0.label_name!r}), {0.node.target!r})'.format,

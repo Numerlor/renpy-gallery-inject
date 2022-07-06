@@ -18,7 +18,7 @@ init python:
         escape_renpy_formatting as __escape_renpy_formatting,
         LogWrapper as __LogWrapper,
         NoRollbackValue as __NoRollbackValue,
-        node_find_templates as __node_find_templates,
+        get_node_find_string as __get_node_find_string,
         set_clipboard as __set_clipboard,
     )
 
@@ -70,11 +70,10 @@ init python:
         renpy.jump(jump_name)
 
     def __copy_find_string(wrapped_node):
-        template = __node_find_templates.get(type(wrapped_node.node))
-        if template is not None:
-            find_string = template(wrapped_node)
-            print(find_string)
-            __set_clipboard(find_string)
+        to_copy = __get_node_find_string(wrapped_node)
+        if to_copy is not None:
+            print(to_copy)
+            __set_clipboard(to_copy)
 
 screen Test():
     zorder 50
