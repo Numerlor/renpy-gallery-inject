@@ -123,7 +123,7 @@ def find_label(label_name):
 
 
 def find_call(start_node, target, return_previous=False):
-    # type: (renpy.ast.Node, t.Text, bool) -> renpy.ast.Node
+    # type: (renpy.ast.Node, t.Text, bool) -> renpy.ast.Call | None
     """Return the label with the `label_name` name."""
 
     def predicate(node):
@@ -133,7 +133,7 @@ def find_call(start_node, target, return_previous=False):
 
 
 def find_say(start_node, what=None, who=None, return_previous=False):
-    # type: (renpy.ast.Node, t.Text | None, t.Text | None, bool) -> renpy.ast.Node
+    # type: (renpy.ast.Node, t.Text | None, t.Text | None, bool) -> renpy.ast.Say | None
     """
     Find the next say node where the sayer `who` says `what`, the first matching node is returned.
 
@@ -154,7 +154,7 @@ def find_say(start_node, what=None, who=None, return_previous=False):
 
 
 def find_code(start_node, var_names, return_previous=False):
-    # type: (renpy.ast.Node, set, bool) -> renpy.ast.Node
+    # type: (renpy.ast.Node, set, bool) -> renpy.ast.Python | None
     """
     Find the code node with `var_names` after `start_node`, the first matching node is returned.
 
@@ -174,7 +174,7 @@ def find_code(start_node, var_names, return_previous=False):
 
 
 def find_jump(start_node, label_name, return_previous=False):
-    # type: (renpy.ast.Node, t.Text, bool) -> renpy.ast.Node
+    # type: (renpy.ast.Node, t.Text, bool) -> renpy.ast.Jump | None
     """
     Find the next jump node that jumps to `label_name` after `start_node`, the first matching node is returned.
 
@@ -190,7 +190,7 @@ def find_jump(start_node, label_name, return_previous=False):
 
 
 def find_scene(start_node, name=None, layer=None, return_previous=False):
-    # type: (renpy.ast.Node, t.Text | None, t.Text | None, bool) -> renpy.ast.Node
+    # type: (renpy.ast.Node, t.Text | None, t.Text | None, bool) -> renpy.ast.Scene | None
     """
     Find the next scene node showing `name` at `layer` after `start_node`, the first matching node is returned.
 
@@ -209,7 +209,7 @@ def find_scene(start_node, name=None, layer=None, return_previous=False):
 
 
 def find_show(start_node, name, return_previous=False):
-    # type: (renpy.ast.Node, t.Text, bool) -> renpy.ast.Node
+    # type: (renpy.ast.Node, t.Text, bool) -> renpy.ast.Show | None
     """
     Find the next show statement showing `name` after `start_node`, the first matching node is returned.
 
@@ -225,7 +225,7 @@ def find_show(start_node, name, return_previous=False):
 
 
 def find_user_statement(start_node, name, params, return_previous=False):
-    # type: (renpy.ast.Node, t.Text, dict, bool) -> renpy.ast.Node
+    # type: (renpy.ast.Node, t.Text, dict, bool) -> renpy.ast.UserStatement | None
     """
     Find the next user statement executing `name` after `start_node`, the first matching node is returned.
 
@@ -247,7 +247,7 @@ def find_user_statement(start_node, name, params, return_previous=False):
 
 
 def find_return(start_node):
-    # type: (renpy.ast.Node) -> renpy.ast.Node
+    # type: (renpy.ast.Node) -> renpy.ast.Return | None
     """
     Return the node before the return node found after `start_node`, the first matching node is returned.
 
@@ -261,7 +261,7 @@ def find_return(start_node):
 
 
 def find_menu(start_node, return_previous=False):
-    # type: (renpy.ast.Node, bool) -> renpy.ast.Node
+    # type: (renpy.ast.Node, bool) -> renpy.ast.Menu | None
     """
     Find the next menu node after `start_node`, the first matching node is returned.
 
