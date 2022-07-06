@@ -9,9 +9,12 @@ from collections import deque, namedtuple
 import typing as t
 
 import renpy.ast
+import renpy.game
 from renpy.sl2 import slast
 
 if t.TYPE_CHECKING:
+    import typing_extensions as te
+    P = te.ParamSpec("P")
     T = t.TypeVar("T")
 
 ANY_LABEL = object()
@@ -116,12 +119,42 @@ def _find_node(type_, predicate, start_node, return_previous):
         return None
 
 
+def _cache_node_find(
+        func  # type: t.Callable[te.Concatenate[renpy.ast.Node | object, P], T]
+):  # type: (...) -> t.Callable[te.Concatenate[renpy.ast.Node | object, P], T]
+    """Cache a find function's result in persistent."""
+    def wrapper(start_node, *args, **kwargs):
+        # type: (renpy.ast.Node | object, P.args, P.kwargs) -> T
+
+        hashable_args = _transform_args_to_hashable(args)
+        hashable_kwargs = _transform_kwargs_to_hashable(kwargs)
+        cache = renpy.game.persistent.node_cache_
+        start_node_name = start_node.name if start_node is not ANY_LABEL else None
+
+        if cache is None:
+            renpy.game.persistent.node_cache_ = cache = {}
+        else:
+            cached_name = cache.get((start_node_name, hashable_args, hashable_kwargs))
+            if cached_name is not None:
+                cached_node = renpy.game.script.namemap.get(cached_name)
+                if cached_node is not None:
+                    return cached_node
+
+        found_node = func(start_node, *args, **kwargs)
+        if found_node is not None:
+            cache[(start_node_name, hashable_args, hashable_kwargs)] = found_node.name
+        return found_node
+
+    return wrapper
+
+
 def find_label(label_name):
     # type: (t.Text) -> renpy.ast.Label
     """Return the label with the `label_name` name."""
     return renpy.game.script.lookup(label_name)
 
 
+@_cache_node_find
 def find_call(start_node, target, return_previous=False):
     # type: (renpy.ast.Node, t.Text, bool) -> renpy.ast.Call | None
     """Return the label with the `label_name` name."""
@@ -132,6 +165,7 @@ def find_call(start_node, target, return_previous=False):
     return _find_node(renpy.ast.Call, predicate, start_node, return_previous)
 
 
+@_cache_node_find
 def find_say(start_node, what=None, who=None, return_previous=False):
     # type: (renpy.ast.Node, t.Text | None, t.Text | None, bool) -> renpy.ast.Say | None
     """
@@ -153,6 +187,7 @@ def find_say(start_node, what=None, who=None, return_previous=False):
     return _find_node(renpy.ast.Say, predicate, start_node, return_previous)
 
 
+@_cache_node_find
 def find_code(start_node, var_names, return_previous=False):
     # type: (renpy.ast.Node, set, bool) -> renpy.ast.Python | None
     """
@@ -173,6 +208,7 @@ def find_code(start_node, var_names, return_previous=False):
     return _find_node(renpy.ast.Python, predicate, start_node, return_previous)
 
 
+@_cache_node_find
 def find_jump(start_node, label_name, return_previous=False):
     # type: (renpy.ast.Node, t.Text, bool) -> renpy.ast.Jump | None
     """
@@ -189,6 +225,7 @@ def find_jump(start_node, label_name, return_previous=False):
     return _find_node(renpy.ast.Jump, predicate, start_node, return_previous)
 
 
+@_cache_node_find
 def find_scene(start_node, name=None, layer=None, return_previous=False):
     # type: (renpy.ast.Node, t.Text | None, t.Text | None, bool) -> renpy.ast.Scene | None
     """
@@ -208,6 +245,7 @@ def find_scene(start_node, name=None, layer=None, return_previous=False):
     return _find_node(renpy.ast.Scene, predicate, start_node, return_previous)
 
 
+@_cache_node_find
 def find_show(start_node, name, return_previous=False):
     # type: (renpy.ast.Node, t.Text, bool) -> renpy.ast.Show | None
     """
@@ -224,6 +262,7 @@ def find_show(start_node, name, return_previous=False):
     return _find_node(renpy.ast.Show, predicate, start_node, return_previous)
 
 
+@_cache_node_find
 def find_user_statement(start_node, name, params, return_previous=False):
     # type: (renpy.ast.Node, t.Text, dict, bool) -> renpy.ast.UserStatement | None
     """
@@ -246,6 +285,7 @@ def find_user_statement(start_node, name, params, return_previous=False):
     return _find_node(renpy.ast.UserStatement, predicate, start_node, return_previous)
 
 
+@_cache_node_find
 def find_return(start_node):
     # type: (renpy.ast.Node) -> renpy.ast.Return | None
     """
@@ -260,6 +300,7 @@ def find_return(start_node):
     return _find_node(renpy.ast.Return, predicate, start_node, True)
 
 
+@_cache_node_find
 def find_menu(start_node, return_previous=False):
     # type: (renpy.ast.Node, bool) -> renpy.ast.Menu | None
     """
@@ -330,3 +371,49 @@ def get_nth_after(node, n):
     for _ in range(n):
         to_return = to_return.next
     return to_return
+
+
+def _transform_args_to_hashable(args):
+    # type: (tuple[object, ...]) -> tuple[t.Hashable, ...]
+    """
+    Turn `args` tuple into a hashable tuple.
+
+    Dicts are turned into tuples of their items, sets into frozensets, lists into tuples.
+    Recursive checks aren't done.
+    """
+    val = []
+    for element in args:
+        if isinstance(element, set):
+            element = frozenset(element)
+        elif isinstance(element, dict):
+            element = tuple(element.items())
+        elif isinstance(element, list):
+            element = tuple(element)
+
+        val.append(element)
+    val = tuple(val)
+    hash(val)
+    return t.cast("tuple[t.Hashable, ...]", val)
+
+
+def _transform_kwargs_to_hashable(kwargs):
+    # type: (dict[str, object]) -> tuple[t.Hashable, ...]
+    """
+    Turn a `kwargs` dictionary in to a hashable tuple.
+
+    Dicts are turned into tuples of their items, sets into frozensets, lists into tuples.
+    Recursive checks aren't done.
+    """
+    val = []
+    for key, element in kwargs.items():
+        if isinstance(element, set):
+            element = frozenset(element)
+        elif isinstance(element, dict):
+            element = tuple(element.items())
+        elif isinstance(element, list):
+            element = tuple(element)
+
+        val.append((key, element))
+    val = tuple(val)
+    hash(val)
+    return t.cast("tuple[t.Hashable, ...]", val)
