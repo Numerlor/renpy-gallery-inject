@@ -69,10 +69,10 @@ init python:
         jump_name = __create_clear_label_to_node(node)
         renpy.jump(jump_name)
 
-    def __copy_find_string(node):
-        template = __node_find_templates.get(type(node))
+    def __copy_find_string(wrapped_node):
+        template = __node_find_templates.get(type(wrapped_node.node))
         if template is not None:
-            find_string = template(node)
+            find_string = template(wrapped_node)
             print(find_string)
             __set_clipboard(find_string)
 
@@ -103,7 +103,7 @@ screen Test():
                         vbox:
                             hbox ysize 20 xsize 250:
                                 textbutton __escape_renpy_formatting(str(wrapped_node)):
-                                    alternate Function(__copy_find_string, wrapped_node.node)
+                                    alternate Function(__copy_find_string, wrapped_node)
                                     padding (0, 0, 0, 0)
                                     yalign 0.5
                                     text_size 10

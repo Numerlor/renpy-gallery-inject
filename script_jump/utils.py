@@ -13,7 +13,7 @@ import renpy
 from renpy.defaultstore import NoRollback
 
 if t.TYPE_CHECKING:
-    from .execution_tracing import NodePathLog
+    from .execution_tracing import NodePathLog, NodeWrapper
 
 __all__ = [
     "NoRollbackValue",
@@ -105,21 +105,40 @@ def _sub_brackets_with_escaped(match):
 
 escape_renpy_formatting = partial(re.compile(r"\{+|\[+").sub, _sub_brackets_with_escaped)
 
-node_find_templates = {  # type: dict[type[renpy.ast.Node, t.Callable[[renpy.ast.Node], t.Text]]]
-    renpy.ast.Say: 'find_say(start_node, what={0.what!r}, who={0.who!r})'.format,
-    renpy.ast.Label: 'find_label(start_node, {0.name!r})'.format,
-    renpy.ast.Jump: 'find_jump(start_node, {0.target!r})'.format,
-    renpy.ast.Return: 'find_return(start_node)'.format,
-    renpy.ast.Menu: 'find_menu(start_node)'.format,
-    renpy.ast.Python: 'find_code(start_node, {{}})'.format,
-    renpy.ast.Call: 'find_call(start_node, {0.label!r})'.format,
-    renpy.ast.Scene: lambda __node: 'find_scene(start_node, name={joined_imspec!r}, layer={layer!r})'.format(
-        joined_imspec=" ".join(__node.imspec[0]), layer=__node.layer
-    ),
-    renpy.ast.Show: lambda __node: 'find_show(start_node, {joined_imspec!r})'.format(
-        joined_imspec=" ".join(__node.imspec[0])
-    ),
-    renpy.ast.UserStatement: lambda __node: 'find_user_statement(start_node, {joined_name!r}, {params})'.format(
-        joined_name=" ".join(__node.parsed[0]), params=__node.parsed[1]
+
+def _scene_template(__wrapped_node):
+    # type: (NodeWrapper) -> t.Text
+    return 'find_scene({wrapped_node.label_name!r}, name={joined_name!r}, layer={wrapped_node.node.layer!r})'.format(
+        joined_name=" ".join(__wrapped_node.node.imspec[0]),
+        wrapped_node=__wrapped_node,
     )
+
+
+def _show_template(__wrapped_node):
+    # type: (NodeWrapper) -> t.Text
+    return 'find_show({wrapped_node.label_name!r}, {joined_name!r})'.format(
+        joined_name=" ".join(__wrapped_node.node.imspec[0]),
+        wrapped_node=__wrapped_node,
+    )
+
+
+def _user_statement_template(__wrapped_node):
+    # type: (NodeWrapper) -> t.Text
+    return 'find_user_statement({wrapped_node.label_name!r}, {joined_name!r}, {wrapped_node.node.parsed})'.format(
+        joined_name=" ".join(__wrapped_node.node.parsed[0]),
+        wrapped_node=__wrapped_node,
+    )
+
+
+node_find_templates = {  # type: dict[type[renpy.ast.Node, t.Callable[[NodeWrapper], t.Text]]]
+    renpy.ast.Say: 'find_say(find_label({0.label_name!r}), what={0.node.what!r}, who={0.node.who!r})'.format,
+    renpy.ast.Label: 'find_label(find_label({0.label_name!r}), {0.node.name!r})'.format,
+    renpy.ast.Jump: 'find_jump(find_label({0.label_name!r}), {0.node.target!r})'.format,
+    renpy.ast.Return: 'find_return(find_label({0.label_name!r}))'.format,
+    renpy.ast.Menu: 'find_menu(find_label({0.label_name!r}))'.format,
+    renpy.ast.Python: 'find_code(find_label({0.label_name!r}), {{}})'.format,
+    renpy.ast.Call: 'find_call(find_label({0.label_name!r}), {0.node.label!r})'.format,
+    renpy.ast.Scene: _scene_template,
+    renpy.ast.Show: _show_template,
+    renpy.ast.UserStatement: _user_statement_template,
 }
