@@ -14,6 +14,9 @@
 # You should have received a copy of the GNU General Public License
 # along with renpy-gallery-inject.  If not, see <https://www.gnu.org/licenses/>.
 
+# Parts of this file are Copyright © 2001-2022 Python Software Foundation; All Rights Reserved,
+# see LICENSE_PYTHON.md for more details.
+
 from __future__ import unicode_literals
 
 from collections import Iterable
@@ -50,6 +53,27 @@ def add_button(use_selection_screen, force_fallback_button):
                     return
 
     screen_to_patch.children.append(fallback_patch_screen)
+
+
+class suppress:
+    """Context manager to suppress specified exceptions
+
+    After the exception is suppressed, execution proceeds with the next
+    statement following the with statement.
+
+         with suppress(FileNotFoundError):
+             os.remove(somefile)
+         # Execution still resumes here if the file was already removed
+    """
+
+    def __init__(self, *exceptions):
+        self._exceptions = exceptions
+
+    def __enter__(self):
+        pass
+
+    def __exit__(self, exctype, excinst, exctb):
+        return exctype is not None and issubclass(exctype, self._exceptions)
 
 
 def grouper(iterable, n):

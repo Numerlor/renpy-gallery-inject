@@ -1,4 +1,5 @@
-Applies to the `WeakMethod` class in script_jump/weakmethod.py:
+Applies to the `WeakMethod` class in `script_jump/weakmethod.py`,
+and `suppress` in `gallery/__init__.py`:
 
 Copyright © 2001-2022 Python Software Foundation; All Rights Reserved
 
