@@ -74,7 +74,7 @@ def walk_sl_ast(wrapped_top_node):
 
 
 def walk_ast(node):
-    # type: (renpy.ast.Node) -> t.Iterator[renpy.ast.Node]
+    # type: (renpy.ast.Node) -> list[renpy.ast.Node]
     """Return list containing all nodes after `node`."""
     flattened_tree = []
     seen = set()
