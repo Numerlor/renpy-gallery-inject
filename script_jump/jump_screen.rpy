@@ -220,14 +220,16 @@ screen main_list_view(length):
         ysize 500
         yalign 0.5
         xsize 250 + 7
-        vpgrid id "vp":
-            cols 1
-            rows length
-            yspacing 0
-            xsize 250
-            mousewheel True
-            transclude
-        vbar value YScrollValue("vp") xalign 1.0 xsize 3 xoffset 4
+        if length:
+            vpgrid id "vp":
+                cols 1
+                rows length
+                yspacing 0
+                xsize 250
+                mousewheel True
+                transclude
+
+            vbar value YScrollValue("vp") xalign 1.0 xsize 3 xoffset 4
 
 
 label _jump_nodes:
