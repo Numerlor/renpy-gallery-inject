@@ -1,4 +1,4 @@
-Applies to script_jump/weakmethod.py:
+Applies to the `WeakMethod` class in script_jump/weakmethod.py:
 
 Copyright © 2001-2022 Python Software Foundation; All Rights Reserved
 

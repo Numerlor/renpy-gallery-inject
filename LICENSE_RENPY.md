@@ -1,4 +1,4 @@
-Applies to script_jump/backport_function.rpy
+Applies to the `function_action_equality` function in script_jump/backport_function.rpy
 
 Copyright 2004-2022 Tom Rothamel <pytom@bishoujo.us>
 
