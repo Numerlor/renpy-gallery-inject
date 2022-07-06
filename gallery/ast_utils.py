@@ -11,6 +11,9 @@ import typing as t
 import renpy.ast
 from renpy.sl2 import slast
 
+if t.TYPE_CHECKING:
+    T = t.TypeVar("T")
+
 ANY_LABEL = object()
 _MISSING = object()
 
@@ -90,7 +93,7 @@ def walk_ast(node):
 
 
 def _find_node(type_, predicate, start_node, return_previous):
-    # type: (type[renpy.ast.Node], t.Callable, renpy.ast.Node, bool) -> renpy.ast.Node | None
+    # type: (type[T], t.Callable, renpy.ast.Node, bool) -> T | None
     """
     Find the node of `type_` for which predicate returns True, if return_previous is true, return the node before.
 
