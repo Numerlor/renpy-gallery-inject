@@ -112,6 +112,7 @@ node_find_templates = {  # type: dict[type[renpy.ast.Node, t.Callable[[renpy.ast
     renpy.ast.Return: 'find_return(start_node)'.format,
     renpy.ast.Menu: 'find_menu(start_node)'.format,
     renpy.ast.Python: 'find_code(start_node, {{}})'.format,
+    renpy.ast.Call: 'find_call(start_node, {0.label})'.format,
     renpy.ast.Scene: lambda __node: 'find_scene(start_node, name={joined_imspec!r}, layer={layer!r})'.format(
         joined_imspec=" ".join(__node.imspec[0]), layer=__node.layer
     ),

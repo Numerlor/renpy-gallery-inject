@@ -21,6 +21,7 @@ __all__ = [
     "NodeWrapper",
     "walk_sl_ast",
     "walk_ast",
+    "find_call",
     "find_say",
     "find_label",
     "find_code",
@@ -116,6 +117,16 @@ def find_label(label_name):
     # type: (t.Text) -> renpy.ast.Label
     """Return the label with the `label_name` name."""
     return renpy.game.script.lookup(label_name)
+
+
+def find_call(start_node, target, return_previous=False):
+    # type: (renpy.ast.Node, t.Text, bool) -> renpy.ast.Node
+    """Return the label with the `label_name` name."""
+
+    def predicate(node):
+        return node.label == target
+
+    return _find_node(renpy.ast.Call, predicate, start_node, return_previous)
 
 
 def find_say(start_node, what=None, who=None, return_previous=False):
