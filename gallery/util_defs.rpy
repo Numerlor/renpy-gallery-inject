@@ -52,3 +52,14 @@ init -1 python:
             return self._hover_image
 
     GalleryItem_ = __namedtuple("GalleryItem_", ["image", "replay_item_list"])
+
+    class ReplayExisting(Replay):
+        """Replay that's locked if the target label doesn't exist."""
+
+        @property
+        def locked(self):
+            return not renpy.has_label(self.label)
+
+        @locked.setter
+        def locked(self, value):
+            pass

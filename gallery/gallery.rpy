@@ -6,7 +6,7 @@ init python:
         return ShowMenu("replay_gallery_screen_", item.replay_item_list)
 
     def __create_gallery_replay_action(item):
-        return Replay(item.label, scope=item.scope_func(), locked=False)
+        return ReplayExisting(item.label, scope=item.scope_func())
 
 screen replay_gallery_screen_(replay_items):
     tag menu
