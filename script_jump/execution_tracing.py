@@ -102,7 +102,10 @@ class NodePathLog(object):
         node = start_node
         call_stack = []
         while True:
-            if node.filename.startswith("patched"):
+            if (
+                type(node) in {renpy.ast.Translate, renpy.ast.EndTranslate}
+                or node.filename.startswith("patched")
+            ):
                 node = node.next
                 continue
 
