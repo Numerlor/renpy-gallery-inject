@@ -118,13 +118,10 @@ def find_label(label_name):
     return renpy.game.script.lookup(label_name)
 
 
-def find_say(query, start_node, return_previous=False):
-    # type: (dict, renpy.ast.Node, bool) -> renpy.ast.Node
+def find_say(start_node, what=None, who=None, return_previous=False):
+    # type: (renpy.ast.Node, t.Text | None, t.Text | None, bool) -> renpy.ast.Node
     """
-    Find the next say node matching `query` after any of `start_node`, the first matching node is returned.
-
-    `query` should be a dict with the following structure {"who": sayer_name, "what": message},
-    where either of the pairs is optional.
+    Find the next say node where the sayer `who` says `what`, the first matching node is returned.
 
     When the `ANY_LABEL` sentinel is passed to `start_node`, all labels are searched for the node.
 
@@ -132,18 +129,18 @@ def find_say(query, start_node, return_previous=False):
     """
 
     def predicate(node):
-        who_match = "who" not in query or query["who"] == node.who
+        who_match = who is None or who == node.who
         what_match = (
-                "what" not in query
-                or difflib.SequenceMatcher(None, query["what"], node.what).ratio() > 0.7
+                what is None
+                or difflib.SequenceMatcher(None, what, node.what).ratio() > 0.7
         )
         return who_match and what_match
 
     return _find_node(renpy.ast.Say, predicate, start_node, return_previous)
 
 
-def find_code(var_names, start_node, return_previous=False):
-    # type: (set, renpy.ast.Node, bool) -> renpy.ast.Node
+def find_code(start_node, var_names, return_previous=False):
+    # type: (renpy.ast.Node, set, bool) -> renpy.ast.Node
     """
     Find the code node with `var_names` after any of `start_node`, the first matching node is returned.
 
@@ -162,8 +159,8 @@ def find_code(var_names, start_node, return_previous=False):
     return _find_node(renpy.ast.Python, predicate, start_node, return_previous)
 
 
-def find_jump(label_name, start_node, return_previous=False):
-    # type: (t.Text, renpy.ast.Node, bool) -> renpy.ast.Node
+def find_jump(start_node, label_name, return_previous=False):
+    # type: (renpy.ast.Node, t.Text, bool) -> renpy.ast.Node
     """
     Find the next jump node that jumps to `label_name` after any of `start_node`, the first matching node is returned.
 
@@ -178,13 +175,10 @@ def find_jump(label_name, start_node, return_previous=False):
     return _find_node(renpy.ast.Jump, predicate, start_node, return_previous)
 
 
-def find_scene(query, start_node, return_previous=False):
-    # type: (dict, renpy.ast.Node, bool) -> renpy.ast.Node
+def find_scene(start_node, name=None, layer=None, return_previous=False):
+    # type: (renpy.ast.Node, t.Text | None, t.Text | None, bool) -> renpy.ast.Node
     """
-    Find the next scene node after any of `start_node`, the first matching node is returned.
-
-    `query` should be a dict with the following structure: {"layer": layer_name, "name": name},
-    where either of the pairs is optional.
+    Find the next scene node showing `name` at `layer` after any of `start_node`, the first matching node is returned.
 
     When the `ANY_LABEL` sentinel is passed to `start_node`, all labels are searched for the node.
 
@@ -193,15 +187,15 @@ def find_scene(query, start_node, return_previous=False):
 
     def predicate(node):
         return (
-                ("layer" not in query or node.layer == query["layer"])
-                and ("name" not in query or (node.imspec is not None and " ".join(node.imspec[0]) == query["name"]))
+                (layer is None or node.layer == layer)
+                and (name is None or (node.imspec is not None and " ".join(node.imspec[0]) == name))
         )
 
     return _find_node(renpy.ast.Scene, predicate, start_node, return_previous)
 
 
-def find_show(name, start_node, return_previous=False):
-    # type: (t.Text, renpy.ast.Node, bool) -> renpy.ast.Node
+def find_show(start_node, name, return_previous=False):
+    # type: (renpy.ast.Node, t.Text, bool) -> renpy.ast.Node
     """
     Find the next show statement showing `name` after any of `start_node`, the first matching node is returned.
 
@@ -216,8 +210,8 @@ def find_show(name, start_node, return_previous=False):
     return _find_node(renpy.ast.Show, predicate, start_node, return_previous)
 
 
-def find_user_statement(name, params, start_node, return_previous=False):
-    # type: (t.Text, dict, renpy.ast.Node, bool) -> renpy.ast.Node
+def find_user_statement(start_node, name, params, return_previous=False):
+    # type: (renpy.ast.Node, t.Text, dict, bool) -> renpy.ast.Node
     """
     Find the next user statement executing `name` after any of `start_node`, the first matching node is returned.
 
