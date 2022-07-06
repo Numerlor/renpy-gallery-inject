@@ -8,6 +8,7 @@ import sys
 import typing as t
 from functools import partial
 
+import pygame.scrap
 import renpy
 from renpy.defaultstore import NoRollback
 
@@ -22,6 +23,8 @@ __all__ = [
     "script_file_contents",
     "elide",
     "escape_renpy_formatting",
+    "node_find_templates",
+    "set_clipboard",
 ]
 
 T = t.TypeVar("T")
@@ -88,6 +91,12 @@ def elide(string, length):
     return string
 
 
+def set_clipboard(text):
+    # type: (t.Text) -> None
+    """Paste the"""
+    pygame.scrap.put(pygame.scrap.SCRAP_TEXT, text.encode())
+
+
 def _sub_brackets_with_escaped(match):
     # type: (re.Match) -> t.Text
     """Double up every bracket/brace matched by `match`."""
@@ -95,3 +104,21 @@ def _sub_brackets_with_escaped(match):
 
 
 escape_renpy_formatting = partial(re.compile(r"\{+|\[+").sub, _sub_brackets_with_escaped)
+
+node_find_templates = {  # type: dict[type[renpy.ast.Node, t.Callable[[renpy.ast.Node], t.Text]]]
+    renpy.ast.Say: 'find_say(start_node, what={0.what!r}, who={0.who!r})'.format,
+    renpy.ast.Label: 'find_label(start_node, {0.name!r})'.format,
+    renpy.ast.Jump: 'find_jump(start_node, {0.target!r})'.format,
+    renpy.ast.Return: 'find_return(start_node)'.format,
+    renpy.ast.Menu: 'find_menu(start_node)'.format,
+    renpy.ast.Python: 'find_code(start_node, {{}})'.format,
+    renpy.ast.Scene: lambda __node: 'find_scene(start_node, name={joined_imspec!r}, layer={layer!r})'.format(
+        joined_imspec=" ".join(__node.imspec[0]), layer=__node.layer
+    ),
+    renpy.ast.Show: lambda __node: 'find_show(start_node, {joined_imspec!r})'.format(
+        joined_imspec=" ".join(__node.imspec[0])
+    ),
+    renpy.ast.UserStatement: lambda __node: 'find_user_statement(start_node, {joined_name!r}, {params})'.format(
+        joined_name=" ".join(__node.parsed[0]), params=__node.parsed[1]
+    )
+}
