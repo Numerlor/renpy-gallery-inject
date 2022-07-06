@@ -93,7 +93,7 @@ def elide(string, length):
 
 def set_clipboard(text):
     # type: (t.Text) -> None
-    """Paste the"""
+    """Copy `text` into the clipboard."""
     pygame.scrap.put(pygame.scrap.SCRAP_TEXT, text.encode())
 
 
