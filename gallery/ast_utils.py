@@ -142,7 +142,7 @@ def find_say(start_node, what=None, who=None, return_previous=False):
 def find_code(start_node, var_names, return_previous=False):
     # type: (renpy.ast.Node, set, bool) -> renpy.ast.Node
     """
-    Find the code node with `var_names` after any of `start_node`, the first matching node is returned.
+    Find the code node with `var_names` after `start_node`, the first matching node is returned.
 
     `var_names` may contain names of variables and attributes any code constants,
     if any of them is in the code, the node is seen as equal to the search.
@@ -162,7 +162,7 @@ def find_code(start_node, var_names, return_previous=False):
 def find_jump(start_node, label_name, return_previous=False):
     # type: (renpy.ast.Node, t.Text, bool) -> renpy.ast.Node
     """
-    Find the next jump node that jumps to `label_name` after any of `start_node`, the first matching node is returned.
+    Find the next jump node that jumps to `label_name` after `start_node`, the first matching node is returned.
 
     When the `ANY_LABEL` sentinel is passed to `start_node`, all labels are searched for the node.
 
@@ -178,7 +178,7 @@ def find_jump(start_node, label_name, return_previous=False):
 def find_scene(start_node, name=None, layer=None, return_previous=False):
     # type: (renpy.ast.Node, t.Text | None, t.Text | None, bool) -> renpy.ast.Node
     """
-    Find the next scene node showing `name` at `layer` after any of `start_node`, the first matching node is returned.
+    Find the next scene node showing `name` at `layer` after `start_node`, the first matching node is returned.
 
     When the `ANY_LABEL` sentinel is passed to `start_node`, all labels are searched for the node.
 
@@ -197,7 +197,7 @@ def find_scene(start_node, name=None, layer=None, return_previous=False):
 def find_show(start_node, name, return_previous=False):
     # type: (renpy.ast.Node, t.Text, bool) -> renpy.ast.Node
     """
-    Find the next show statement showing `name` after any of `start_node`, the first matching node is returned.
+    Find the next show statement showing `name` after `start_node`, the first matching node is returned.
 
     When the `ANY_LABEL` sentinel is passed to `start_node`, all labels are searched for the node.
 
@@ -213,7 +213,7 @@ def find_show(start_node, name, return_previous=False):
 def find_user_statement(start_node, name, params, return_previous=False):
     # type: (renpy.ast.Node, t.Text, dict, bool) -> renpy.ast.Node
     """
-    Find the next user statement executing `name` after any of `start_node`, the first matching node is returned.
+    Find the next user statement executing `name` after `start_node`, the first matching node is returned.
 
     All keys from `params` must be present in the statement's params with equal values.
 
@@ -235,7 +235,7 @@ def find_user_statement(start_node, name, params, return_previous=False):
 def find_return(start_node):
     # type: (renpy.ast.Node) -> renpy.ast.Node
     """
-    Return the node before the return node found after any of `start_node`, the first matching node is returned.
+    Return the node before the return node found after `start_node`, the first matching node is returned.
 
     When the `ANY_LABEL` sentinel is passed to `start_node`, all labels are searched for the node.
     """
@@ -249,7 +249,7 @@ def find_return(start_node):
 def find_menu(start_node, return_previous=False):
     # type: (renpy.ast.Node, bool) -> renpy.ast.Node
     """
-    Find the next menu node after any of `start_node`, the first matching node is returned.
+    Find the next menu node after `start_node`, the first matching node is returned.
 
     When the `ANY_LABEL` sentinel is passed to `start_node`, all labels are searched for the node.
 
