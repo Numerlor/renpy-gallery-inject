@@ -1,4 +1,4 @@
-# This file is a part of renpy-gallery-inject, see __init__.py for more details.
+# This file is a part of renpy-gallery-inject. See __init__.py for more details.
 # Copyright (C) 2022 Numerlor
 
 define config.search_prefixes += ["renpy-gallery-inject-resources/"]
@@ -117,7 +117,7 @@ screen ScriptLog():
 
                                 if wrapped_node.forkable:
                                     imagebutton:
-                                        idle  "fork.png"
+                                        idle "fork.png"
                                         padding (0, 0, 0, 0)
                                         xalign 1.0
                                         xoffset -2
@@ -125,7 +125,7 @@ screen ScriptLog():
                                         action [
                                             SetField(forking_node, "value", wrapped_node),
                                             CaptureFocus("fork_dropdown"),
-                                        ]
+                                       ]
                             bar ysize 1 xsize 250
             else:
                 use main_list_view(0)

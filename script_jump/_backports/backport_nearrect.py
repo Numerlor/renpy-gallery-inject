@@ -1,4 +1,4 @@
-# This file is a part of renpy-gallery-inject, see __init__.py, and LICENSE_RENPY for more details.
+# This file is a part of renpy-gallery-inject. See __init__.py, and LICENSE_RENPY for more details.
 # Copyright (C) 2022 Numerlor, Copyright 2004-2022 Tom Rothamel <pytom@bishoujo.us>
 
 from __future__ import division, absolute_import, with_statement, print_function, unicode_literals
