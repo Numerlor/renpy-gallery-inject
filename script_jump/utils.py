@@ -77,8 +77,8 @@ def script_file_contents(filename):
     filename = removeprefix(filename, "game/")
     lines = _script_cache.get(filename)
     if lines is None:
-        with renpy.exports.open_file(filename, encoding="utf8") as file:
-            lines = _script_cache[filename] = file.readlines()
+        with renpy.loader.load(filename) as file:
+            lines = _script_cache[filename] = file.read().decode().splitlines(True)
 
     return lines
 
