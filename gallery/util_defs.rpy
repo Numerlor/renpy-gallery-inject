@@ -63,3 +63,11 @@ init -1 python:
         @locked.setter
         def locked(self, value):
             pass
+
+# Ensure typing is available.
+init -500 python early hide:
+    try:
+        import typing
+    except ImportError:
+        from gallery import typing
+        sys.modules["typing"] = typing
