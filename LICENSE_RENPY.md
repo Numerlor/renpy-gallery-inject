@@ -1,4 +1,7 @@
-Applies to the `function_action_equality` function in script_jump/_backports/backport_function.rpy
+Applies to:
+ - the `function_action_equality` function in `script_jump/_backports/backport_function.rpy`
+ - the `script_jump/_backports/backport_nearrect.py` file
+ - `CaptureFocus`, `ToggleFocus`, `ClearFocus`, `GetFocusRect` in `script_jump/_backports/backport_nearrect.rpy`
 
 Copyright 2004-2022 Tom Rothamel <pytom@bishoujo.us>
 
