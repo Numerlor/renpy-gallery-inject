@@ -19,7 +19,6 @@
 
 from __future__ import unicode_literals
 
-from collections import Iterable
 from itertools import islice
 import typing as t
 
@@ -77,7 +76,7 @@ class suppress:
 
 
 def grouper(iterable, n):
-    # type: (Iterable[T], int) -> tuple[tuple[T, ...], ...]
+    # type: (t.Iterable[T], int) -> tuple[tuple[T, ...], ...]
     """Group items from iterable into `n` sized chunks, the last chunk may be smaller than n."""
     it = iter(iterable)
     return tuple(iter(lambda: tuple(islice(it, n)), ()))
