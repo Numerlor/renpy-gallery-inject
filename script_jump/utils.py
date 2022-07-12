@@ -37,7 +37,7 @@ class NoRollbackValue(NoRollback, t.Generic[T]):
         self.value = value
 
 
-class LogWrapper:
+class LogWrapper(object):
     """Wrap a `NodePathLog` and the parent log it came from."""
 
     def __init__(self, parent, log):

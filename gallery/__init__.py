@@ -54,7 +54,7 @@ def add_button(use_selection_screen, force_fallback_button):
     screen_to_patch.children.append(fallback_patch_screen)
 
 
-class suppress:
+class suppress(object):
     """Context manager to suppress specified exceptions
 
     After the exception is suppressed, execution proceeds with the next

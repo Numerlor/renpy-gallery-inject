@@ -15,7 +15,7 @@ __all__ = [
 ]
 
 
-class AttributeChangeNotifier:
+class AttributeChangeNotifier(object):
     """Descriptor for notifying about changes to the assigned attribute through callbacks."""
     def __init__(self, name):
         # type: (str) -> None
