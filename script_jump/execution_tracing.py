@@ -103,35 +103,7 @@ class NodePathLog(object):
 
         self._nodes = OrderedDict()
         self.current_node = None
-        node = start_node
-        call_stack = []
-        current_label_name = None
-
-        while True:
-            if (
-                type(node) in {renpy.ast.Translate, renpy.ast.EndTranslate}
-                or node.filename.startswith("patched")
-            ):
-                node = node.next
-                continue
-
-            if type(node) == renpy.ast.Label:
-                current_label_name = node.name
-
-            self._nodes[node] = NodeWrapper(node, current_label_name)
-            next_node = node.next
-            if isinstance(node, renpy.ast.Call) and not node.expression:
-                call_stack.append((node, current_label_name))
-                node = renpy.game.script.lookup(node.label)
-            elif next_node is not None:
-                node = next_node
-            elif isinstance(node, renpy.ast.Jump) and not node.expression:
-                node = renpy.game.script.lookup(node.target)
-            elif call_stack:
-                saved_node, current_label_name = call_stack.pop()
-                node = saved_node.next
-            else:
-                break
+        self._populate_nodes(start_node)
 
     @property
     def nodes(self):
@@ -152,3 +124,41 @@ class NodePathLog(object):
         # type: (renpy.ast.Node) -> bool
         """Return True if the passed in node is a node in this path, False otherwise."""
         return node in self._nodes
+
+    def _populate_nodes(self, start_node):
+        # type: (renpy.ast.Node) -> None
+        """Populate `self._nodes` with all the nodes directly reachable from `start_node`."""
+        node = start_node
+        call_stack = []
+        current_label_name = None
+
+        while True:
+            if (
+                type(node) in {renpy.ast.Translate, renpy.ast.EndTranslate}
+                or node.filename.startswith("patched")
+            ):
+                node = node.next
+                continue
+
+            if type(node) == renpy.ast.Label:
+                current_label_name = node.name
+
+            self._nodes[node] = NodeWrapper(node, current_label_name)
+            next_node = node.next
+
+            if isinstance(node, renpy.ast.Call) and not node.expression:
+                call_stack.append((node, current_label_name))
+                node = renpy.game.script.lookup(node.label)
+
+            elif next_node is not None:
+                node = next_node
+
+            elif isinstance(node, renpy.ast.Jump) and not node.expression:
+                node = renpy.game.script.lookup(node.target)
+
+            elif call_stack:
+                saved_node, current_label_name = call_stack.pop()
+                node = saved_node.next
+
+            else:
+                break
