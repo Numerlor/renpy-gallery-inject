@@ -105,11 +105,11 @@ screen ScriptLog():
                         vbox:
                             hbox ysize 20 xsize 250:
                                 textbutton __escape_renpy_formatting(str(wrapped_node)):
-                                    alternate Function(__copy_find_string, wrapped_node)
                                     padding (0, 0, 0, 0)
                                     yalign 0.5
                                     text_size 10
                                     action Function(__patch_label_and_jump, wrapped_node.node)
+                                    alternate Function(__copy_find_string, wrapped_node)
                                     text_font "JetBrainsMono-SemiBold.ttf"
                                     text_layout "nobreak"
                                     if wrapped_node is active_log.value.log.current_node:
