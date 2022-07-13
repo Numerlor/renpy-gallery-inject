@@ -81,6 +81,7 @@ init python:
             print(to_copy)
             __set_clipboard(to_copy)
 
+
 screen ScriptLog():
     zorder 50
     default active_log = __NoRollbackValue(None)
@@ -184,6 +185,8 @@ screen fork_dropdown_list:
                                     text_font "JetBrainsMono-SemiBold.ttf"
                                     text_layout "nobreak"
                             bar ysize 1 xsize 250
+
+
 screen navigation_buttons:
     frame:
         xalign 1.0
