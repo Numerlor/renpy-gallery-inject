@@ -28,7 +28,7 @@ init -1000 python early hide:
         # Ensure that Parsers are no longer added automatically.
         renpy.sl2.slparser.parser = None
     else:
-        store.__patched = True
+        store.__patched = False
 
 init -500 python:
     if __patched:
