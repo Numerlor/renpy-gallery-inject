@@ -22,7 +22,6 @@ init -1000 python early hide:
         dismiss_parser.add(renpy.sl2.slparser.if_statement)
         dismiss_parser.add(renpy.sl2.slparser.pass_statement)
 
-        # Ensure that Parsers are no longer added automatically.
         renpy.sl2.slparser.parser = None
 
 init -500 python:
