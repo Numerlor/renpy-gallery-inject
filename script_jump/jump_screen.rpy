@@ -151,10 +151,10 @@ screen ScriptLog():
 
                         bar ysize 1 xsize 250
 
+        use navigation_buttons
+
         if GetFocusRect("fork_dropdown"):
             use fork_dropdown_list
-
-        use navigation_buttons
 
 
 screen fork_dropdown_list:
