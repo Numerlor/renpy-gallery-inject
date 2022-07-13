@@ -30,10 +30,10 @@ init python:
 
     @renpy.pure
     class __SetFieldFromCallable(Function):
-        def __init__(self, __object, __name, __callable, *args, **kwargs):
-            super(__SetFieldFromCallable, self).__init__(__callable, *args, **kwargs)
-            self.name = __name
-            self.obj = __object
+        def __init__(self, object, name, callable, *args, **kwargs):
+            super(__SetFieldFromCallable, self).__init__(callable, *args, **kwargs)
+            self.name = name
+            self.obj = object
 
         def __call__(self):
             setattr(self.obj, self.name, super(__SetFieldFromCallable, self).__call__())
@@ -47,6 +47,9 @@ init python:
 
         __ne__ = lambda self, other: not __eq__(self, other)
 
+
+    __SetValField = lambda obj, val: SetField(obj, "value", val)
+    __SetValFieldFromCallable = lambda obj, callable, *args, **kwargs: __SetFieldFromCallable(obj, "value", callable, *args, **kwargs)
 
     logs = []  # type: list[__LogWrapper]
 
@@ -96,7 +99,7 @@ screen ScriptLog():
         yalign 0.5
         yoffset -250 - 20
         xalign 1.0
-        action SetField(visible, "value", not visible.value)
+        action __SetValField(visible, not visible.value)
 
     if visible.value:
         if not show_logs.value:
@@ -124,7 +127,7 @@ screen ScriptLog():
                                         xoffset -2
                                         yalign 0.5
                                         action [
-                                            SetField(forking_node, "value", wrapped_node),
+                                            __SetValField(forking_node, wrapped_node),
                                             CaptureFocus("fork_dropdown"),
                                        ]
                             bar ysize 1 xsize 250
@@ -141,8 +144,8 @@ screen ScriptLog():
                                 yalign 0.5
                                 text_size 10
                                 action [
-                                    SetField(active_log, "value", wrapped_log),
-                                    SetField(show_logs, "value", not show_logs.value),
+                                    __SetValField(active_log, wrapped_log),
+                                    __SetValField(show_logs, not show_logs.value),
                                 ]
                                 text_font "JetBrainsMono-SemiBold.ttf"
                                 text_layout "nobreak"
@@ -159,7 +162,7 @@ screen fork_dropdown_list:
     if forking_node.value is None:  # rollback/rollforward messes with the variable
         $ renpy.clear_capture_focus("fork_dropdown")
     else:
-        dismiss action [ClearFocus("fork_dropdown"), SetField(forking_node, "value", None)]
+        dismiss action [ClearFocus("fork_dropdown"), __SetValField(forking_node, None)]
         nearrect:
             focus "fork_dropdown"
             frame:
@@ -176,7 +179,7 @@ screen fork_dropdown_list:
                                     text_size 10
                                     action [
                                         Function(logs.append, __LogWrapper(active_log.value, log)),
-                                        __SetFieldFromCallable(active_log, "value", __operator.itemgetter(-1), logs),
+                                        __SetValFieldFromCallable(active_log, __operator.itemgetter(-1), logs),
                                         ClearFocus("fork_dropdown"),
                                     ]
                                     text_font "JetBrainsMono-SemiBold.ttf"
@@ -193,21 +196,21 @@ screen navigation_buttons:
             imagebutton:
                 idle "start_arrow.png"
                 yalign 0.5
-                action __SetFieldFromCallable(active_log, "value", __log_from_executing_node)
+                action __SetValFieldFromCallable(active_log, __log_from_executing_node)
 
             vbar xsize 2 ysize 32
 
             imagebutton:
                 idle "left_arrow.png"
                 if active_log.value is not None:
-                    action SetField(page_index, "value", (page_index.value - 1) % len(active_log.value.log.paged_nodes))
+                    action __SetValField(page_index, (page_index.value - 1) % len(active_log.value.log.paged_nodes))
 
             vbar xsize 2 ysize 32
 
             imagebutton:
                 idle "right_arrow.png"
                 if active_log.value is not None:
-                    action SetField(page_index, "value", (page_index.value + 1) % len(active_log.value.log.paged_nodes))
+                    action __SetValField(page_index, (page_index.value + 1) % len(active_log.value.log.paged_nodes))
 
             vbar xsize 2 ysize 32
 
@@ -217,17 +220,17 @@ screen navigation_buttons:
                 yalign 0.5
                 if active_log.value is not None and active_log.value.parent is not None:
                     action [
-                        SetField(active_log, "value", active_log.value.parent),
-                        SetField(page_index, "value", 0),
+                        __SetValField(active_log, active_log.value.parent),
+                        __SetValField(page_index, 0),
                     ]
                 elif show_logs.value:
-                    action SetField(show_logs, "value", not show_logs.value)
+                    action __SetValField(show_logs, not show_logs.value)
 
             vbar xsize 2 ysize 32
 
             imagebutton:
                 idle "menu.png"
-                action SetField(show_logs, "value", not show_logs.value)
+                action __SetValField(show_logs, not show_logs.value)
 
             vbar xsize 2 ysize 32
 
