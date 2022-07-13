@@ -44,6 +44,13 @@ class LogWrapper(object):
         # type: (NodePathLog | None, NodePathLog) -> None
         self.parent = parent
         self.log = log
+        self.page_index = 0
+
+    @property
+    def current_page(self):
+        # type: () -> tuple[NodeWrapper, ...]
+        """Get the tuple of the current page."""
+        return self.log.paged_nodes[self.page_index]
 
 
 def dict_values(dict_):

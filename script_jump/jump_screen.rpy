@@ -87,7 +87,6 @@ screen ScriptLog():
     default visible = __NoRollbackValue(True)
     default forking_node = __NoRollbackValue(None)
     default show_logs = __NoRollbackValue(False)
-    default page_index = __NoRollbackValue(0)
 
     imagebutton:
         if visible.value:
@@ -104,8 +103,8 @@ screen ScriptLog():
     if visible.value:
         if not show_logs.value:
             if active_log.value is not None:
-                use main_list_view(len(active_log.value.log.paged_nodes[page_index.value])):
-                    for wrapped_node in active_log.value.log.paged_nodes[page_index.value]:
+                use main_list_view(len(active_log.value.current_page)):
+                    for wrapped_node in active_log.value.current_page:
                         vbox:
                             hbox ysize 20 xsize 250:
                                 textbutton __escape_renpy_formatting(str(wrapped_node)):
@@ -203,15 +202,22 @@ screen navigation_buttons:
             imagebutton:
                 idle "left_arrow.png"
                 if active_log.value is not None:
-                    action __SetValField(page_index, (page_index.value - 1) % len(active_log.value.log.paged_nodes))
+                    action SetField(
+                        active_log,
+                        "value.page_index",
+                        (active_log.value.page_index - 1) % len(active_log.value.log.paged_nodes)
+                    )
 
             vbar xsize 2 ysize 32
 
             imagebutton:
                 idle "right_arrow.png"
                 if active_log.value is not None:
-                    action __SetValField(page_index, (page_index.value + 1) % len(active_log.value.log.paged_nodes))
-
+                    action SetField(
+                        active_log,
+                        "value.page_index",
+                        (active_log.value.page_index + 1) % len(active_log.value.log.paged_nodes)
+                    )
             vbar xsize 2 ysize 32
 
             imagebutton:
@@ -219,10 +225,7 @@ screen navigation_buttons:
                 insensitive Transform("back.png", matrixcolor=BrightnessMatrix(-0.6))
                 yalign 0.5
                 if active_log.value is not None and active_log.value.parent is not None:
-                    action [
-                        __SetValField(active_log, active_log.value.parent),
-                        __SetValField(page_index, 0),
-                    ]
+                    action __SetValField(active_log, active_log.value.parent)
                 elif show_logs.value:
                     action __SetValField(show_logs, not show_logs.value)
 
