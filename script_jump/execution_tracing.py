@@ -8,6 +8,7 @@ from collections import OrderedDict
 
 import renpy
 
+from gallery import grouper
 from script_jump.utils import elide, script_file_contents, dict_values
 from script_jump.attribute_change_notifier import AttributeChangeNotifier
 
@@ -18,6 +19,8 @@ __all__ = [
 ]
 
 _new_node_notifier = None  # type: AttributeChangeNotifier | None
+
+NODE_PAGE_SIZE = 500
 
 
 def patch_context_notifier():
@@ -102,6 +105,7 @@ class NodePathLog(object):
         _new_node_notifier.add_callback(self.update_from_new_node)
 
         self._nodes = OrderedDict()
+        self._paged_nodes = None
         self.current_node = None
         self._populate_nodes(start_node)
 
@@ -110,6 +114,14 @@ class NodePathLog(object):
         # type: () -> t.ValuesView[NodeWrapper]
         """Get a dict view of the wrapped nodes in this log."""
         return dict_values(self._nodes)
+
+    @property
+    def paged_nodes(self):
+        # type: () -> tuple[tuple[NodeWrapper, ...], ...]
+        """Nodes paged into tuples of `NODE_PAGE_SIZE` elements, last tuple may be smaller."""
+        if self._paged_nodes is None:
+            self._paged_nodes = grouper(self.nodes, NODE_PAGE_SIZE)
+        return self._paged_nodes
 
     def update_from_new_node(self, node_name):
         # type: (t.Text) -> None

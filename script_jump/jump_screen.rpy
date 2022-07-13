@@ -84,6 +84,7 @@ screen ScriptLog():
     default visible = __NoRollbackValue(True)
     default forking_node = __NoRollbackValue(None)
     default show_logs = __NoRollbackValue(False)
+    default page_index = __NoRollbackValue(0)
 
     imagebutton:
         if visible.value:
@@ -100,8 +101,8 @@ screen ScriptLog():
     if visible.value:
         if not show_logs.value:
             if active_log.value is not None:
-                use main_list_view(len(active_log.value.log.nodes)):
-                    for wrapped_node in active_log.value.log.nodes:
+                use main_list_view(len(active_log.value.log.paged_nodes[page_index.value])):
+                    for wrapped_node in active_log.value.log.paged_nodes[page_index.value]:
                         vbox:
                             hbox ysize 20 xsize 250:
                                 textbutton __escape_renpy_formatting(str(wrapped_node)):
@@ -197,11 +198,28 @@ screen navigation_buttons:
             vbar xsize 2 ysize 32
 
             imagebutton:
+                idle "left_arrow.png"
+                if active_log.value is not None:
+                    action SetField(page_index, "value", (page_index.value - 1) % len(active_log.value.log.paged_nodes))
+
+            vbar xsize 2 ysize 32
+
+            imagebutton:
+                idle "right_arrow.png"
+                if active_log.value is not None:
+                    action SetField(page_index, "value", (page_index.value + 1) % len(active_log.value.log.paged_nodes))
+
+            vbar xsize 2 ysize 32
+
+            imagebutton:
                 idle "back.png"
                 insensitive Transform("back.png", matrixcolor=BrightnessMatrix(-0.6))
                 yalign 0.5
                 if active_log.value is not None and active_log.value.parent is not None:
-                    action SetField(active_log, "value", active_log.value.parent)
+                    action [
+                        SetField(active_log, "value", active_log.value.parent),
+                        SetField(page_index, "value", 0),
+                    ]
                 elif show_logs.value:
                     action SetField(show_logs, "value", not show_logs.value)
 
