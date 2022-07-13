@@ -2,10 +2,7 @@
 # Copyright (C) 2022 Numerlor, Copyright 2004-2022 Tom Rothamel <pytom@bishoujo.us>
 
 init -1000 python early hide:
-    import renpy.display.layout
-    if not hasattr(renpy.display.layout, "NearRect"):
-        store.__patched = True
-        import renpy
+    if renpy.version_tuple < (7, 5, 0):
         from script_jump._backports.backport_nearrect import NearRect, DismissBehavior
 
         nearrect_parser = renpy.sl2.slparser.DisplayableParser("nearrect", NearRect, "default", 1, replaces=True)
@@ -27,11 +24,9 @@ init -1000 python early hide:
 
         # Ensure that Parsers are no longer added automatically.
         renpy.sl2.slparser.parser = None
-    else:
-        store.__patched = False
 
 init -500 python:
-    if __patched:
+    if renpy.version_tuple < (7, 5, 0):
         from script_jump._backports.backport_nearrect import (
             capture_focus as __capture_focus,
             clear_capture_focus as __clear_capture_focus,
