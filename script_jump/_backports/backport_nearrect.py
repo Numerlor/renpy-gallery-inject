@@ -144,7 +144,7 @@ class NearRect(renpy.display.layout.Container):
 
         if self.prefer_top and (ch < py):
             layout_y = py - ch
-        elif ch < (height - pw - ph):
+        elif ch < (height - py - ph):
             layout_y = py + ph
         else:
             layout_y = py - ch
