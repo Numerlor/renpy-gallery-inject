@@ -85,7 +85,7 @@ def script_file_contents(filename):
     lines = _script_cache.get(filename)
     if lines is None:
         with renpy.loader.load(filename) as file:
-            lines = _script_cache[filename] = file.read().decode().splitlines(True)
+            lines = _script_cache[filename] = file.read().decode(errors="surrogateescape").splitlines(True)
 
     return lines
 
