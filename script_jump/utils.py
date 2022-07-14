@@ -153,7 +153,7 @@ def get_node_find_string(wrapped_node):
 # dict[type[T], t.Callable[[NodeWrapper[T]], t.Text]]
 _node_find_templates = {
     renpy.ast.Say: "find_say(find_label({0.label_name!r}), what={0.node.what!r}, who={0.node.who!r})".format,
-    renpy.ast.Label: "find_label(find_label({0.label_name!r}), {0.node.name!r})".format,
+    renpy.ast.Label: "find_label({0.node.name!r})".format,
     renpy.ast.Jump: "find_jump(find_label({0.label_name!r}), {0.node.target!r})".format,
     renpy.ast.Return: "find_return(find_label({0.label_name!r}))".format,
     renpy.ast.Menu: "find_menu(find_label({0.label_name!r}))".format,
