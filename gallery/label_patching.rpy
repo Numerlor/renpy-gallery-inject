@@ -4,7 +4,7 @@
 init 999 python hide:
     from gallery.ast_utils import (
         ANY_LABEL,
-        NodeWrapper,
+        WrappedSlNode,
         walk_sl_ast,
         walk_ast,
         find_say,

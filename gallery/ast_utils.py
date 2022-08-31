@@ -20,11 +20,11 @@ if t.TYPE_CHECKING:
 ANY_LABEL = object()
 _MISSING = object()
 
-NodeWrapper = namedtuple("NodeWrapper", ["node", "parent", "pos_in_parent"])
+WrappedSlNode = namedtuple("WrappedSlNode", ["node", "parent", "pos_in_parent"])
 
 __all__ = [
     "ANY_LABEL",
-    "NodeWrapper",
+    "WrappedSlNode",
     "walk_sl_ast",
     "walk_ast",
     "find_call",
@@ -46,7 +46,7 @@ __all__ = [
 
 
 def walk_sl_ast(wrapped_top_node):
-    # type: (NodeWrapper) -> t.Iterator[NodeWrapper]
+    # type: (WrappedSlNode) -> t.Iterator[WrappedSlNode]
     """
     Yield all the child block nodes from the node in `wrapped_top_node`.
 
@@ -59,18 +59,18 @@ def walk_sl_ast(wrapped_top_node):
         if isinstance(wrapped_node.node, (slast.SLIf, slast.SLShowIf)):
             # for ifs, yield the if node, but directly attribute its branch blocks to the parent node
             for _, block in wrapped_node.node.entries:
-                wrapped_block = NodeWrapper(
+                wrapped_block = WrappedSlNode(
                     block, wrapped_node.parent, wrapped_node.pos_in_parent
                 )
                 todo.extend(
-                    NodeWrapper(child, wrapped_block, pos)
+                    WrappedSlNode(child, wrapped_block, pos)
                     for pos, child in enumerate(block.children)
                 )
             yield wrapped_node
 
         elif isinstance(wrapped_node.node, slast.SLBlock):
             todo.extend(
-                NodeWrapper(child, wrapped_node, pos)
+                WrappedSlNode(child, wrapped_node, pos)
                 for pos, child in enumerate(wrapped_node.node.children)
             )
             yield wrapped_node

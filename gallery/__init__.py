@@ -26,7 +26,7 @@ import renpy
 import renpy.display.screen
 from renpy.sl2 import slast
 
-from .ast_utils import NodeWrapper, walk_sl_ast
+from .ast_utils import WrappedSlNode, walk_sl_ast
 
 T = t.TypeVar("T")
 
@@ -43,7 +43,7 @@ def add_button(use_selection_screen, force_fallback_button):
     screen_to_patch = renpy.display.screen.get_screen_variant("navigation").function
 
     if not force_fallback_button:
-        for wrapped_node in walk_sl_ast(NodeWrapper(screen_to_patch, None, 0)):
+        for wrapped_node in walk_sl_ast(WrappedSlNode(screen_to_patch, None, 0)):
             if isinstance(wrapped_node.node, (slast.SLIf, slast.SLShowIf)):
                 if any("_in_replay" in entry for entry in wrapped_node.node.entries):
                     wrapped_node.parent.node.children.insert(
