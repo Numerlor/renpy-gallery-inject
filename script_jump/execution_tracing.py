@@ -42,10 +42,11 @@ class NodeWrapper(t.Generic[_NodeT]):
     """
     __slots__ = ("node", "line", "label_name", "_child_logs")
 
-    def __init__(self, node, label_name):
-        # type: (_NodeT, t.Text | None) -> None
+    def __init__(self, node, parent_wrapper, label_name):
+        # type: (_NodeT, NodeWrapper, t.Text | None) -> None
         self.node = node
         self.label_name = label_name
+        self.parent_wrapper = parent_wrapper
         self.line = elide(
             script_file_contents(node.filename)[node.linenumber - 1].strip(),
             25,
@@ -143,6 +144,7 @@ class NodePathLog(object):
         node = start_node
         call_stack = []
         current_label_name = None
+        previous_wrapper = None
 
         while True:
             if (
@@ -155,15 +157,14 @@ class NodePathLog(object):
             if type(node) == renpy.ast.Label:
                 current_label_name = node.name
 
-            self._nodes[node] = NodeWrapper(node, current_label_name)
-            next_node = node.next
+            self._nodes[node] = previous_wrapper = NodeWrapper(node, previous_wrapper, current_label_name)
 
             if isinstance(node, renpy.ast.Call) and not node.expression:
                 call_stack.append((node, current_label_name))
                 node = renpy.game.script.lookup(node.label)
 
-            elif next_node is not None:
-                node = next_node
+            elif node.next is not None:
+                node = node.next
 
             elif isinstance(node, renpy.ast.Jump) and not node.expression:
                 node = renpy.game.script.lookup(node.target)
