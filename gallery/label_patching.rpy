@@ -22,6 +22,12 @@ init 999 python hide:
         get_nth_after,
     )
     from gallery import suppress
+
+    if __debug__ or config.developer:
+        suppress_find_errors = suppress
+    else:
+        suppress_find_errors = partial(suppress, Exception)
+
     # The usual statements to hook into are shows/scenes for the starts and jumps for the end
     # so that the replay stats with an image shown,
     # but our script doesn't have those so we use the say statements
@@ -29,13 +35,13 @@ init 999 python hide:
     # Suppress attribute error from accessing next from None when node is not found.
     # This would be more properly done with if checks but those would be a bit more verbose to get the same
     # behaviour, and only the next error should occur for attribute errors.
-    with suppress(AttributeError):
+    with suppress(Exception):
         # find a say that says "5" in any label, says are wrapped in translations so get the node after that
         replay1_start_node = find_say(ANY_LABEL, what="5").next
         # create a replay1 label after the found say from above
         create_artificial_label(replay1_start_node, "replay1")
 
-    with suppress(AttributeError):
+    with suppress(Exception):
         start_label = find_label("example_label")  # find the start label
         # find a say that says "8" after the start label, and get the end translation node from after it
         replay1_end_node = find_say(start_label, what="8").next
