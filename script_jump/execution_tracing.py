@@ -144,7 +144,7 @@ class NodePathLog(object):
 
         while True:
             if (
-                type(node) in {renpy.ast.Translate, renpy.ast.EndTranslate}
+                type(node) in {renpy.ast.Translate, renpy.ast.EndTranslate, renpy.ast.Init}
                 or node.filename.startswith("patched")
             ):
                 node = node.next
