@@ -14,6 +14,8 @@ init python:
         create_clear_label_to_node as __create_clear_label_to_node,
     )
     from script_jump.execution_tracing import (
+        forked_child_logs as __forked_child_logs,
+        node_forkable as __node_forkable,
         NodePathLog as __NodePathLog,
         patch_context_notifier as __patch_context_notifier,
     )
@@ -119,7 +121,7 @@ screen ScriptLog():
                                     if wrapped_node is active_log.value.log.current_node:
                                         text_color "#ffeb5c"
 
-                                if wrapped_node.forkable:
+                                if __node_forkable(wrapped_node):
                                     imagebutton:
                                         idle "fork.png"
                                         padding (0, 0, 0, 0)
@@ -168,9 +170,9 @@ screen fork_dropdown_list:
             frame:
                 vpgrid:
                     cols 1
-                    rows len(forking_node.value.child_logs)
+                    rows len(__forked_child_logs(forking_node.value))
                     yspacing 0
-                    for log in forking_node.value.child_logs:
+                    for log in __forked_child_logs(forking_node.value):
                         vbox:
                             hbox ysize 20 xsize 250:
                                 textbutton __escape_renpy_formatting(str(next(iter(log.nodes)))):

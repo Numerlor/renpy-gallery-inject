@@ -3,14 +3,21 @@
 
 from __future__ import unicode_literals
 
+import functools
 import typing as t
 from collections import OrderedDict
 
 import renpy
 
 from gallery import grouper
-from script_jump.utils import elide, script_file_contents, dict_values
+from script_jump.utils import dict_values, NodeWrapper
 from script_jump.attribute_change_notifier import AttributeChangeNotifier
+
+if t.TYPE_CHECKING:
+    import collections.abc
+    from typing_extensions import ParamSpec
+    T = t.TypeVar("T")
+    P = ParamSpec("P")
 
 __all__ = [
     "patch_context_notifier",
@@ -23,6 +30,27 @@ _new_node_notifier = None  # type: AttributeChangeNotifier | None
 NODE_PAGE_SIZE = 500
 
 
+def _cache(func):
+    # type: (collections.abc.Callable[P, T]) -> collections.abc.Callable[P, T]
+    """
+    Cache results of `func` with the passed positional arguments.
+
+    kwargs are ignored.
+    """
+    cache = {}
+
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        # type: (P.args, P.kwargs) -> T
+        try:
+            return cache[args]
+        except KeyError:
+            cache[args] = ret_val = func(*args)
+            return ret_val
+
+    return wrapper
+
+
 def patch_context_notifier():
     # type: () -> None
     """Patch in Context's current variable to the ChangeNotify descriptor."""
@@ -30,67 +58,35 @@ def patch_context_notifier():
     renpy.execution.Context.current = _new_node_notifier = AttributeChangeNotifier("current")
 
 
-_NodeT = t.TypeVar("_NodeT", bound=renpy.ast.Node)
+def node_forkable(wrapped_node):
+    # type: (NodeWrapper) -> bool
+    """True if the wrapped node can be forked into child logs, False otherwise."""
+    return isinstance(wrapped_node.node, (renpy.ast.Menu, renpy.ast.If, renpy.ast.While))
 
 
-class NodeWrapper(t.Generic[_NodeT]):
+@_cache
+def forked_child_logs(wrapped_node):
+    # type: (NodeWrapper) -> list[NodePathLog]
     """
-    Wrap a renpy ast node.
+    The child logs under this node.
 
-    The wrapper allows NodePathLogs to be created from its children,
-    and provides a string representation with its line from the file.
+    The logs are cached after the first access.
     """
-    __slots__ = ("node", "line", "label_name", "_child_logs")
-
-    def __init__(self, node, parent_wrapper, label_name):
-        # type: (_NodeT, NodeWrapper, t.Text | None) -> None
-        self.node = node
-        self.label_name = label_name
-        self.parent_wrapper = parent_wrapper
-        self.line = elide(
-            script_file_contents(node.filename)[node.linenumber - 1].strip(),
-            25,
-        )
-        self._child_logs = None  # type: list[NodePathLog] | None
-
-    def __str__(self):
-        return "{:<15} {}".format(type(self.node).__name__, self.line)
-
-    @property
-    def forkable(self):
-        # type: () -> bool
-        """True if the wrapped node can be forked into child logs, False otherwise."""
-        return isinstance(self.node, (renpy.ast.Menu, renpy.ast.If, renpy.ast.While))
-
-    @property
-    def child_logs(self):
-        # type: () -> list[NodePathLog]
-        """
-        The child logs under this node.
-
-        The logs are cached after the first access.
-        """
-
-        if self._child_logs is not None:
-            return self._child_logs
-
-        if isinstance(self.node, renpy.ast.Menu):
-            self._child_logs = [
-                NodePathLog(branch_nodes[0])
-                for (_, _, branch_nodes) in self.node.items if branch_nodes is not None
-            ]
-        elif isinstance(self.node, renpy.ast.If):
-            self._child_logs = [
-                NodePathLog(branch_nodes[0])
-                for (_, branch_nodes) in self.node.entries if branch_nodes is not None
-            ]
-        elif isinstance(self.node, renpy.ast.While):
-            # not a fork but creates a child
-            self._child_logs = [NodePathLog(self.node.block[0])]
-        else:
-            raise RuntimeError("Node of type {!r} has no children.", type(self.node).__name__)
-
-        return self._child_logs
+    if isinstance(wrapped_node.node, renpy.ast.Menu):
+        return [
+            NodePathLog(branch_nodes[0])
+            for (_, _, branch_nodes) in wrapped_node.node.items if branch_nodes is not None
+        ]
+    elif isinstance(wrapped_node.node, renpy.ast.If):
+        return [
+            NodePathLog(branch_nodes[0])
+            for (_, branch_nodes) in wrapped_node.node.entries if branch_nodes is not None
+        ]
+    elif isinstance(wrapped_node.node, renpy.ast.While):
+        # not a fork but creates a child
+        return [NodePathLog(wrapped_node.node.block[0])]
+    else:
+        raise RuntimeError("Node of type {!r} has no children.", type(wrapped_node.node).__name__)
 
 
 class NodePathLog(object):

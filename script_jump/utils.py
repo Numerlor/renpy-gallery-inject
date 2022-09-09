@@ -13,9 +13,10 @@ import renpy
 from renpy.defaultstore import NoRollback
 
 if t.TYPE_CHECKING:
-    from .execution_tracing import NodePathLog, NodeWrapper
+    from .execution_tracing import NodePathLog
 
 __all__ = [
+    "NodeWrapper",
     "NoRollbackValue",
     "LogWrapper",
     "dict_values",
@@ -35,6 +36,32 @@ class NoRollbackValue(NoRollback, t.Generic[T]):
     def __init__(self, value):
         # type: (T) -> None
         self.value = value
+
+
+_NodeT = t.TypeVar("_NodeT", bound=renpy.ast.Node)
+
+
+class NodeWrapper(t.Generic[_NodeT]):
+    """
+    Wrap a renpy ast node.
+
+    The wrapper allows NodePathLogs to be created from its children,
+    and provides a string representation with its line from the file.
+    """
+    __slots__ = ("node", "line", "label_name", "parent_wrapper")
+
+    def __init__(self, node, parent_wrapper, label_name):
+        # type: (_NodeT, NodeWrapper, t.Text | None) -> None
+        self.node = node
+        self.label_name = label_name
+        self.parent_wrapper = parent_wrapper
+        self.line = elide(
+            script_file_contents(node.filename)[node.linenumber - 1].strip(),
+            25,
+        )
+
+    def __str__(self):
+        return "{:<15} {}".format(type(self.node).__name__, self.line)
 
 
 class LogWrapper(object):
