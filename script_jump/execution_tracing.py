@@ -144,13 +144,13 @@ class NodePathLog(object):
 
         while True:
             if (
-                type(node) in {renpy.ast.Translate, renpy.ast.EndTranslate, renpy.ast.Init}
+                isinstance(node, (renpy.ast.Translate, renpy.ast.EndTranslate, renpy.ast.Init))
                 or node.filename.startswith("patched")
             ):
                 node = node.next
                 continue
 
-            if type(node) == renpy.ast.Label:
+            if isinstance(node, renpy.ast.Label):
                 current_label_name = node.name
 
             self._nodes[node] = previous_wrapper = NodeWrapper(node, previous_wrapper, current_label_name)
