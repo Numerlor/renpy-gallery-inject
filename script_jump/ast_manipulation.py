@@ -9,8 +9,7 @@ import time
 import renpy
 import renpy.ast
 
-from gallery.ast_utils import find_label, mark_node_patched
-
+from gallery.ast_utils import find_label, mark_node_patched, create_artificial_label
 
 __all__ = [
     "executing_node",
@@ -47,12 +46,8 @@ def create_clear_label_to_node(node):
         _load_patch_nodes()
 
     label_name = str(time.time())
-    start = copy.copy(_patch_label)
-    start.name = label_name
-    renpy.game.script.namemap[label_name] = start
-
     clear_start, clear_end = _get_scene_start_and_end()
-    start.next = clear_start
+    create_artificial_label(clear_start, label_name)
     clear_end.next = node
     return label_name
 
