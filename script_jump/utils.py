@@ -48,13 +48,13 @@ class NodeWrapper(t.Generic[_NodeT]):
     The wrapper allows NodePathLogs to be created from its children,
     and provides a string representation with its line from the file.
     """
-    __slots__ = ("node", "line", "label_name", "parent_wrapper")
+    __slots__ = ("node", "line", "label_name", "previous_wrapper")
 
-    def __init__(self, node, parent_wrapper, label_name):
+    def __init__(self, node, previous_wrapper, label_name):
         # type: (_NodeT, NodeWrapper, t.Text | None) -> None
         self.node = node
         self.label_name = label_name
-        self.parent_wrapper = parent_wrapper
+        self.previous_wrapper = previous_wrapper
         self.line = elide(
             script_file_contents(node.filename)[node.linenumber - 1].strip(),
             25,
