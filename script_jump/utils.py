@@ -51,7 +51,7 @@ class NodeWrapper(t.Generic[_NodeT]):
     __slots__ = ("node", "line", "label_name", "previous_wrapper")
 
     def __init__(self, node, previous_wrapper, label_name):
-        # type: (_NodeT, "NodeWrapper", t.Text | None) -> None
+        # type: (_NodeT, "NodeWrapper | None", t.Text | None) -> None
         self.node = node
         self.label_name = label_name
         self.previous_wrapper = previous_wrapper
