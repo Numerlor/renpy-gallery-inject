@@ -3,21 +3,15 @@
 
 from __future__ import unicode_literals
 
-import functools
 import typing as t
 from collections import OrderedDict
 
 import renpy
 
 from gallery import grouper
-from script_jump.utils import dict_values, NodeWrapper
+from script_jump.utils import dict_values, NodeWrapper, cache
 from script_jump.attribute_change_notifier import AttributeChangeNotifier
 
-if t.TYPE_CHECKING:
-    import collections.abc
-    from typing_extensions import ParamSpec
-    T = t.TypeVar("T")
-    P = ParamSpec("P")
 
 __all__ = [
     "patch_context_notifier",
@@ -28,27 +22,6 @@ __all__ = [
 _new_node_notifier = None  # type: AttributeChangeNotifier | None
 
 NODE_PAGE_SIZE = 500
-
-
-def _cache(func):
-    # type: (collections.abc.Callable[P, T]) -> collections.abc.Callable[P, T]
-    """
-    Cache results of `func` with the passed positional arguments.
-
-    kwargs are ignored.
-    """
-    cache = {}
-
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        # type: (P.args, P.kwargs) -> T
-        try:
-            return cache[args]
-        except KeyError:
-            cache[args] = ret_val = func(*args)
-            return ret_val
-
-    return wrapper
 
 
 def patch_context_notifier():
@@ -64,7 +37,7 @@ def node_forkable(wrapped_node):
     return isinstance(wrapped_node.node, (renpy.ast.Menu, renpy.ast.If, renpy.ast.While))
 
 
-@_cache
+@cache
 def forked_child_logs(wrapped_node):
     # type: (NodeWrapper) -> list[NodePathLog]
     """

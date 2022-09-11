@@ -3,6 +3,7 @@
 
 from __future__ import unicode_literals
 
+import functools
 import re
 import sys
 import typing as t
@@ -15,12 +16,17 @@ from renpy.defaultstore import NoRollback
 import script_jump
 
 if t.TYPE_CHECKING:
+    import collections.abc
+    from typing_extensions import ParamSpec
     from .execution_tracing import NodePathLog
+
+    P = ParamSpec("P")
 
 __all__ = [
     "NodeWrapper",
     "NoRollbackValue",
     "LogWrapper",
+    "cache",
     "dict_values",
     "removeprefix",
     "script_file_contents",
@@ -98,6 +104,27 @@ class LogWrapper(object):
         return self.log.paged_nodes[self.page_index]
 
 
+_KEYWORD_SEP_SENTINEL = object()
+
+
+def cache(func):
+    # type: (collections.abc.Callable[P, T]) -> collections.abc.Callable[P, T]
+    """Cache results of `func`."""
+    cache_dict = {}
+
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        # type: (P.args, P.kwargs) -> T
+        cache_key = (args, _KEYWORD_SEP_SENTINEL, *kwargs.items())
+        try:
+            return cache_dict[cache_key]
+        except KeyError:
+            cache_dict[cache_key] = ret_val = func(*args, **kwargs)
+            return ret_val
+
+    return wrapper
+
+
 def dict_values(dict_):
     # type: (dict) -> t.ValuesView
     """Get the values view of `dict_`."""
@@ -116,9 +143,7 @@ def removeprefix(__string, __prefix):
     return __string
 
 
-_script_cache = {}
-
-
+@cache
 def script_file_contents(filename):
     # type: (t.Text) -> list[t.Text]
     """
@@ -127,12 +152,8 @@ def script_file_contents(filename):
     Return values are cached.
     """
     filename = removeprefix(filename, "game/")
-    lines = _script_cache.get(filename)
-    if lines is None:
-        with renpy.loader.load(filename) as file:
-            lines = _script_cache[filename] = file.read().decode(errors="surrogateescape").splitlines(True)
-
-    return lines
+    with renpy.loader.load(filename) as file:
+        return file.read().decode(errors="surrogateescape").splitlines(True)
 
 
 def elide(string, length):
