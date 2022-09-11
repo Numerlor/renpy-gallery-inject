@@ -276,7 +276,7 @@ def _decode_label(node_wrapper):
     # type: (NodeWrapper[renpy.ast.Label]) -> t.Text
     node = node_wrapper.node
     param_string = _get_params_string(node.parameters) if node.parameters is not None else ""
-    parts = ["label{}".format(param_string)]
+    parts = ["label {}{}".format(node.name, param_string)]
 
     if node.hide:
         parts.append("hide")
