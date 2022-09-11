@@ -311,6 +311,11 @@ def _decode_menu(node_wrapper):
     return "menu{}:".format(args_string)
 
 
+def _decode_user_statement(node_wrapper):
+    # type: (NodeWrapper[renpy.ast.UserStatement]) -> t.Text
+    return node_wrapper.node.line
+
+
 _type_to_decode_func = {
     renpy.ast.Say: _decode_say,
     renpy.ast.Scene: _decode_scene,
@@ -328,4 +333,5 @@ _type_to_decode_func = {
     renpy.ast.Pass: _decode_pass,
     renpy.ast.Return: _decode_return,
     renpy.ast.Menu: _decode_menu,
+    renpy.ast.UserStatement: _decode_user_statement,
 }
