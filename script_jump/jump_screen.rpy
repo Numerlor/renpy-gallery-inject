@@ -2,9 +2,7 @@
 # Copyright (C) 2022 Numerlor
 
 define config.search_prefixes += ["renpy-gallery-inject-resources/"]
-
-init 10:
-    define config.always_shown_screens += ["ScriptLog"]
+define config.always_shown_screens += ["ScriptLog"]
 
 init python:
     import operator as __operator
