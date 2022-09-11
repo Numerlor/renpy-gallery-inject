@@ -63,6 +63,14 @@ class NodeWrapper(t.Generic[_NodeT]):
     def __str__(self):
         return "{:<15} {}".format(type(self.node).__name__, self.line)
 
+    def __repr__(self):
+        return "<NodeWrapper type(node)={} node.filename={!r} node.linenumber={!r} label={!r}>".format(
+            type(self.node).__qualname__,
+            self.node.filename,
+            self.node.linenumber,
+            self.label_name,
+        )
+
 
 class LogWrapper(object):
     """Wrap a `NodePathLog` and the parent log it came from."""
