@@ -45,6 +45,9 @@ class NoRollbackValue(NoRollback, t.Generic[T]):
         # type: (T) -> None
         self.value = value
 
+    def __repr__(self):
+        return "{}({})".format(self.__class__.__name__, self.value)
+
 
 _NodeT = t.TypeVar("_NodeT", bound=renpy.ast.Node)
 
