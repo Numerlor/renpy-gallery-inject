@@ -12,6 +12,8 @@ import pygame.scrap
 import renpy
 from renpy.defaultstore import NoRollback
 
+import script_jump
+
 if t.TYPE_CHECKING:
     from .execution_tracing import NodePathLog
 
@@ -48,20 +50,17 @@ class NodeWrapper(t.Generic[_NodeT]):
     The wrapper allows NodePathLogs to be created from its children,
     and provides a string representation with its line from the file.
     """
-    __slots__ = ("node", "line", "label_name", "previous_wrapper")
+    __slots__ = ("node", "_line", "label_name", "previous_wrapper")
 
     def __init__(self, node, previous_wrapper, label_name):
         # type: (_NodeT, "NodeWrapper | None", t.Text | None) -> None
         self.node = node
         self.label_name = label_name
         self.previous_wrapper = previous_wrapper
-        self.line = elide(
-            script_file_contents(node.filename)[node.linenumber - 1].strip(),
-            25,
-        )
+        self._line = None
 
     def __str__(self):
-        return "{:<15} {}".format(type(self.node).__name__, self.line)
+        return "{:<15} {}".format(type(self.node).__name__, self.line_string)
 
     def __repr__(self):
         return "<NodeWrapper type(node)={} node.filename={!r} node.linenumber={!r} label={!r}>".format(
@@ -70,6 +69,17 @@ class NodeWrapper(t.Generic[_NodeT]):
             self.node.linenumber,
             self.label_name,
         )
+
+    @property
+    def line_string(self):
+        """The first line of code necessary to create the node this wraps."""
+        if self._line is None:
+            if self.node.filename.endswith(".rpyc"):
+                line_text = script_jump.ast_unparse.node_text(self)
+            else:
+                line_text = script_file_contents(self.node.filename)[self.node.linenumber - 1].strip()
+            self._line = elide(line_text, 25)
+        return self._line
 
 
 class LogWrapper(object):

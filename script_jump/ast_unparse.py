@@ -3,8 +3,8 @@ from __future__ import unicode_literals
 import typing as t
 
 import renpy
-from script_jump.execution_tracing import NodeWrapper
-from script_jump.utils import removeprefix
+
+from script_jump.utils import removeprefix, NodeWrapper
 
 __all__ = ("node_text", )
 
