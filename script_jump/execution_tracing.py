@@ -9,7 +9,7 @@ from collections import OrderedDict
 import renpy
 
 from gallery import grouper
-from script_jump.utils import dict_values, NodeWrapper, cache
+from script_jump.utils import NodeWrapper, cache
 from script_jump.attribute_change_notifier import AttributeChangeNotifier
 
 
@@ -74,16 +74,17 @@ class NodePathLog(object):
         assert _new_node_notifier is not None
         _new_node_notifier.add_callback(self.update_from_new_node)
 
-        self._nodes = OrderedDict()
+        self._node_to_wrapper = {}  # type: dict[renpy.ast.Node, NodeWrapper]
+        self._nodes = []  # type: list[NodeWrapper]
         self._paged_nodes = None
         self.current_node = None
         self._populate_nodes(start_node)
 
     @property
     def nodes(self):
-        # type: () -> t.ValuesView[NodeWrapper]
+        # type: () -> list[NodeWrapper]
         """Get a dict view of the wrapped nodes in this log."""
-        return dict_values(self._nodes)
+        return self._nodes
 
     @property
     def paged_nodes(self):
@@ -98,14 +99,14 @@ class NodePathLog(object):
         """Change the current index to point to the node with the name `node_name`, if it is in this execution path."""
         renpy_node = renpy.game.script.namemap.get(node_name)
         if renpy_node is not None and not renpy_node.filename.startswith("patched"):
-            wrapped_node = self._nodes.get(renpy_node)
+            wrapped_node = self._node_to_wrapper.get(renpy_node)
             if wrapped_node is not None:
                 self.current_node = wrapped_node
 
     def has_node(self, node):
         # type: (renpy.ast.Node) -> bool
         """Return True if the passed in node is a node in this path, False otherwise."""
-        return node in self._nodes
+        return node in self._node_to_wrapper
 
     def _populate_nodes(self, start_node):
         # type: (renpy.ast.Node) -> None
@@ -126,7 +127,8 @@ class NodePathLog(object):
             if isinstance(node, renpy.ast.Label):
                 current_label_name = node.name
 
-            self._nodes[node] = previous_wrapper = NodeWrapper(node, previous_wrapper, current_label_name)
+            self._node_to_wrapper[node] = previous_wrapper = NodeWrapper(node, previous_wrapper, current_label_name)
+            self._nodes.append(previous_wrapper)
 
             if isinstance(node, renpy.ast.Call) and not node.expression:
                 call_stack.append((node, current_label_name))

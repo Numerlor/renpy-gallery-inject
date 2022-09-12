@@ -27,7 +27,6 @@ __all__ = [
     "NoRollbackValue",
     "LogWrapper",
     "cache",
-    "dict_values",
     "removeprefix",
     "script_file_contents",
     "elide",
@@ -126,15 +125,6 @@ def cache(func):
             return ret_val
 
     return wrapper
-
-
-def dict_values(dict_):
-    # type: (dict) -> t.ValuesView
-    """Get the values view of `dict_`."""
-    if sys.version_info.major == 3:
-        return dict_.values()
-    else:
-        return dict_.viewvalues()
 
 
 def removeprefix(__string, __prefix):
