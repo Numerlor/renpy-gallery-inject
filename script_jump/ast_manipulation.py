@@ -52,10 +52,6 @@ def create_clear_label_to_node(node):
     return label_name
 
 
-def _attach_node(node, next_):
-    node.next = next_
-
-
 def executing_node():
     # type: () -> renpy.ast.Node | None
     """Get the node that's currently executing in the game."""
