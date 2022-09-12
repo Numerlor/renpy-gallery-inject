@@ -21,7 +21,7 @@ __all__ = [
 
 _new_node_notifier = None  # type: AttributeChangeNotifier | None
 
-NODE_PAGE_SIZE = 500
+NODE_PAGE_SIZE = 250
 
 
 def patch_context_notifier():
