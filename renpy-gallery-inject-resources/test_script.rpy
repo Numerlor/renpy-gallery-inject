@@ -4,8 +4,13 @@ label example_label:
     "3"
     "4"
     "5"
-    "6"
-    "7"
-    "8"
-    "9"
-    "10"
+    if a:
+        "6"
+    else:
+        "7"
+
+    menu:
+        "choice1":
+            "8"
+        "choice2":
+            "9"
