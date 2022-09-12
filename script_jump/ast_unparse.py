@@ -1,6 +1,26 @@
 # This file is a part of renpy-gallery-inject. See __init__.py for more details.
 # Copyright (C) 2022 Numerlor
 
+"""
+Unparse lines from compiled nodes.
+
+Example usage:
+
+# script.rpy
+speaker "some text"
+show image_name with transition  # creates with nodes around
+
+# file.py
+>>> all_nodes = get_all_wrapped_nodes_from_rpy("script.rpy")
+>>> for node_wrapper in all_nodes:
+... print(node_text(node_wrapper))
+...
+speaker "some text"
+with transition <paired below>
+show image_name with transition
+with transition
+"""
+
 from __future__ import unicode_literals
 
 import typing as t

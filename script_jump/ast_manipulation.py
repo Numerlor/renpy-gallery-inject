@@ -1,6 +1,8 @@
 # This file is a part of renpy-gallery-inject. See __init__.py for more details.
 # Copyright (C) 2022 Numerlor
 
+"""AST utils to help with observing the execution of the nodes, and to patch in new entry points."""
+
 from __future__ import unicode_literals
 
 import copy
